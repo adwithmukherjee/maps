@@ -1,0 +1,25 @@
+INPUT
+stars data/stars/ten-star.csv
+naive_radius 20 "Sol"
+stars data/stars/stardata.csv
+naive_radius 20 Darren
+radius 20 Darren
+radius 0 "Sol"
+OUTPUT
+Read 10 stars from data/stars/ten-star.csv
+70667
+71454
+71457
+87666
+118721
+3759
+Read 119617 stars from data/stars/stardata.csv
+4541
+3748
+4536
+4615
+4541
+3748
+4536
+4615
+END

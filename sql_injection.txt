@@ -1,0 +1,7 @@
+
+1. Deadly input: <value>; DROP TABLE <table>. After the semicolon, we can inject our own SQL to destroy the database.
+
+2. We are also able to get the app to return a bunch of entries by using SELECT * statements and inserting truthy values like OR 1=1.
+
+3. To ensure that SQL injections can't run on our software, we'd parse the inputs for SQL operations. Breaking operations include 'DROP', 'DELETE',
+'SELECT,' equals signs, and quotation marks. I would avoid allowing any user direct access to the text of a SQL query entirely.

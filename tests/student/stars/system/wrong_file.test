@@ -1,0 +1,5 @@
+INPUT
+stars data/people/people.csv
+OUTPUT
+ERROR:
+END
