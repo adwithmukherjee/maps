@@ -43,7 +43,7 @@ public class DBReference {
   }
 
   public void initializeTreeAndGraph() {
-    _graph = new MapGraph();
+    _graph = new MapGraph(this);
     _tree = new MapTree(_graph);
   }
 

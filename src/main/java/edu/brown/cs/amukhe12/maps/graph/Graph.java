@@ -91,18 +91,18 @@ public class Graph<N extends Node, E extends Edge> {
    */
   public List<E> djikstra(N u, N v) {
 
-    PriorityQueue<PQEntry<N>> pq = new PriorityQueue<>();
-    HashMap<N, PQEntry<N>> nodeToEntries = new HashMap();
-    HashMap<PQEntry<N>, PQEntry<N>> prevPointer = new HashMap<>();
-    HashMap<PQEntry<N>, E> pointerEdges = new HashMap<>();
+    PriorityQueue<DPQEntry<N>> pq = new PriorityQueue<>();
+    HashMap<N, DPQEntry<N>> nodeToEntries = new HashMap();
+    HashMap<DPQEntry<N>, DPQEntry<N>> prevPointer = new HashMap<>();
+    HashMap<DPQEntry<N>, E> pointerEdges = new HashMap<>();
 
     for (N node : _nodes.values()) {
-      PQEntry<N> entry;
+      DPQEntry<N> entry;
 
       if (node == u) {
-        entry = new PQEntry<N>(0, node);
+        entry = new DPQEntry<N>(0, node);
       } else {
-        entry = new PQEntry<N>(Double.MAX_VALUE, node);
+        entry = new DPQEntry<N>(Double.MAX_VALUE, node);
       }
       pq.add(entry);
       nodeToEntries.put(node, entry);
@@ -113,10 +113,10 @@ public class Graph<N extends Node, E extends Edge> {
     while (!pq.isEmpty()) {
 
 
-      PQEntry<N> source = pq.poll();
+      DPQEntry<N> source = pq.poll();
       Collection<E> outEdges = source.getValue().getOutEdges();
       for (E edge : outEdges) {
-        PQEntry<N> endNode = nodeToEntries.get(edge.to());
+        DPQEntry<N> endNode = nodeToEntries.get(edge.to());
         Double sourceDist = source.getKey();
         Double edgeWeight = edge.weight();
         Double endDist = endNode.getKey();
@@ -124,7 +124,7 @@ public class Graph<N extends Node, E extends Edge> {
         if (sourceDist + edgeWeight < endDist) {
           N endNodeValue = endNode.getValue();
           pq.remove(endNode);
-          PQEntry<N> newEntry = new PQEntry<N>(sourceDist + edgeWeight, endNodeValue);
+          DPQEntry<N> newEntry = new DPQEntry<N>(sourceDist + edgeWeight, endNodeValue);
           pq.add(newEntry);
           nodeToEntries.put(endNodeValue, newEntry);
 
@@ -135,7 +135,7 @@ public class Graph<N extends Node, E extends Edge> {
     }
     //BACKTRACKING
     List<E> shortestPath = new ArrayList<>();
-    PQEntry<N> end = nodeToEntries.get(v);
+    DPQEntry<N> end = nodeToEntries.get(v);
     while (prevPointer.get(end) != null) {
 
       if (pointerEdges.get(end) != null) {

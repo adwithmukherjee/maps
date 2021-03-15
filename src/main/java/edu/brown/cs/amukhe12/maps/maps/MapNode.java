@@ -1,5 +1,6 @@
 package edu.brown.cs.amukhe12.maps.maps;
 
+import edu.brown.cs.amukhe12.maps.EntryList;
 import edu.brown.cs.amukhe12.maps.graph.Node;
 
 import java.util.Arrays;
@@ -82,7 +83,6 @@ public class MapNode implements Node<MapNode, Way> {
   public String getId() {
     return _id;
   }
-
 
 }
 

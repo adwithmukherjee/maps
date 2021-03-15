@@ -60,10 +60,10 @@ public class RouteAction implements IEvent {
           MapNode node2 = _db.getTree().nearest(1, lat2, long2).get(0).getValue();
           double radius = node1.distanceTo(node2);
 
-          new SQLParser(_db.getFilename(), _map)
-              .parse(
-                  SQLQueries.routeEdges(maxLat + deltaLat, minLong - deltaLong, minLat - deltaLat,
-                      maxLong + deltaLong));
+//          new SQLParser(_db.getFilename(), _map)
+//              .parse(
+//                  SQLQueries.routeEdges(maxLat + deltaLat, minLong - deltaLong, minLat - deltaLat,
+//                      maxLong + deltaLong));
 
           List<Way> route =
               _map.routeFromNodeIds(node1.getId(), node2.getId());
@@ -125,10 +125,10 @@ public class RouteAction implements IEvent {
             double deltaLat = Math.abs(maxLat - minLat) / 2;
             double deltaLong = Math.abs(maxLong - minLong) / 2;
 
-            new SQLParser(_db.getFilename(), _map)
-                .parse(
-                    SQLQueries.routeEdges(maxLat + deltaLat, minLong - deltaLong, minLat - deltaLat,
-                        maxLong + deltaLong));
+//            new SQLParser(_db.getFilename(), _map)
+//                .parse(
+//                    SQLQueries.routeEdges(maxLat + deltaLat, minLong - deltaLong, minLat - deltaLat,
+//                        maxLong + deltaLong));
 
             List<Way> route =
                 _map.routeFromNodeIds(node1.getId(), node2.getId());
@@ -146,7 +146,9 @@ public class RouteAction implements IEvent {
             _map.clearEdges();
             _db.cache(command, results);
           } catch (Exception e2) {
+            e2.printStackTrace();
             throw new Exception("incorrect arg format");
+
           }
         }
       }

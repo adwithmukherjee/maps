@@ -1,6 +1,5 @@
 package edu.brown.cs.amukhe12.maps;
 
-import edu.brown.cs.amukhe12.maps.graph.PQEntry;
 import edu.brown.cs.amukhe12.maps.maps.MapGraph;
 import edu.brown.cs.amukhe12.maps.maps.MapNode;
 import org.junit.After;
@@ -15,7 +14,7 @@ public class MapGraphTest {
 
   @Before
   public void setUp() throws Exception {
-    _mapGraph = new MapGraph();
+    _mapGraph = new MapGraph(null);
     _mapGraph.insertNode(new MapNode("0", 0.0, 0.0));
   }
 

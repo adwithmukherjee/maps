@@ -1,17 +1,18 @@
 package edu.brown.cs.amukhe12.maps.graph;
 
-public class PQEntry<N extends Node> implements Comparable<PQEntry> {
+public class DPQEntry<N extends Node> implements Comparable<DPQEntry> {
 
     private Double _key;
     private N _node;
+    private boolean _visited;
 
-    public PQEntry(double key, N node){
+    public DPQEntry(double key, N node){
       _key = key;
       _node = node;
     }
 
     @Override
-    public int compareTo(PQEntry o) {
+    public int compareTo(DPQEntry o) {
       return this.getKey().compareTo(o.getKey());
     }
     public void setKey(double key){
@@ -22,5 +23,8 @@ public class PQEntry<N extends Node> implements Comparable<PQEntry> {
     }
     public N getValue(){
       return _node;
+    }
+    public boolean visited() {
+      return _visited;
     }
   }
