@@ -80,10 +80,7 @@ const Map = ({ corners, canvasRef }) => {
             }).catch((err) => {
                 
             })
-    
-        
-            //console.log((await res).data)
-            //return (await res).data
+
         }
         getWays()
         
