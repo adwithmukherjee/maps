@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import edu.brown.cs.amukhe12.maps.Events.maps.MapAction;
 import edu.brown.cs.amukhe12.maps.Events.maps.NearestMapAction;
 import edu.brown.cs.amukhe12.maps.Events.maps.RouteAction;
@@ -20,16 +23,21 @@ import edu.brown.cs.amukhe12.maps.REPL.EventKey;
 import edu.brown.cs.amukhe12.maps.REPL.REPL;
 import edu.brown.cs.amukhe12.maps.csvparser.CSVParser;
 import edu.brown.cs.amukhe12.maps.maps.DBReference;
+import edu.brown.cs.amukhe12.maps.maps.SQLQueries;
+import edu.brown.cs.amukhe12.maps.sqlparser.SQLParser;
 import edu.brown.cs.amukhe12.maps.stars.PersonList;
 import edu.brown.cs.amukhe12.maps.stars.Star;
 import edu.brown.cs.amukhe12.maps.stars.StarList;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import org.json.JSONException;
+import org.json.JSONObject;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
+import spark.Route;
 import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -44,6 +52,8 @@ import freemarker.template.Configuration;
 public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
+  private static final Gson GSON = new Gson();
+  private DBReference db = new DBReference();
 
   /**
    * The initial method called when execution begins.
@@ -77,7 +87,7 @@ public final class Main {
 
       StarList stars = new StarList();
       PersonList people = new PersonList();
-      DBReference db = new DBReference();
+
 
       List<EventKey> events = new ArrayList<EventKey>();
 
@@ -94,31 +104,9 @@ public final class Main {
 
       REPL repl = new REPL(events);
 
-    } catch (Exception e){
+    } catch (Exception e) {
       System.out.println("ERROR: Could not add events or create REPL");
     }
-  }
-
-
-  private String generateCell(String starId, String starName, double x, double y, double z) {
-    return "<li>\n" +
-        "          <div class = \"list-item\">\n" +
-        "            <div class = \"list-item-content\">\n" +
-        "              <i class=\"fas fa-star\" style=\"margin-right: 10px; color:hsl(" +
-        (int) (180 + 40 * Math.random()) + "," + (25 + 70 * Math.random()) + "%," +
-        (15 + 70 * Math.random()) + "%)\">  </i>\n" +
-        "                 " + starName + "\n" +
-        "              <div class = \"list-item-id\">\n" +
-        "                " + starId + "\n" +
-        "              </div>\n" +
-        "            </div>\n" +
-        "            <div style=\"flex: 1; margin: auto\">\n" +
-        "              <div class = \"list-item-coords\">\n" +
-        "                (" + x + ", " + y + ", " + z + ")\n" +
-        "              </div>\n" +
-        "            </div>\n" +
-        "          </div>\n" +
-        "        </li>";
   }
 
 
@@ -139,19 +127,88 @@ public final class Main {
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
+    Spark.options("/*", (request, response) -> {
+      String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+      if (accessControlRequestHeaders != null) {
+        response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+      }
+
+      String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+
+      if (accessControlRequestMethod != null) {
+        response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+      }
+
+      return "OK";
+    });
+
+    Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+
 
     FreeMarkerEngine freeMarker = createEngine();
 
-    StarList stars = new StarList();
-    String fireflies = this.generateStars();
+//    StarList stars = new StarList();
+//    String fireflies = this.generateStars();
+//
+//    // Setup Stars Routes
+//    Spark.get("/stars", new FrontHandler(fireflies), freeMarker);
+//    Spark.post("/select-data", new DataHandler(stars, fireflies), freeMarker);
+//    Spark.post("/neighbors", new NeighborHandler(stars, fireflies), freeMarker);
+//    Spark.post("/radius", new RadiusHandler(stars, fireflies), freeMarker);
 
-    // Setup Spark Routes
-    Spark.get("/stars", new FrontHandler(fireflies), freeMarker);
-    Spark.post("/select-data", new DataHandler(stars, fireflies), freeMarker);
-    Spark.post("/neighbors", new NeighborHandler(stars, fireflies), freeMarker);
-    Spark.post("/radius", new RadiusHandler(stars, fireflies), freeMarker);
+    //Setup Maps Routes
+    DBReference _db = new DBReference();
+    Spark.post("/ways", new WaysHandler());
+
+
   }
 
+  ///////////////////////////
+  //////MAPS HANDLERS////////
+  ///////////////////////////
+  private class RouteHandler implements Route {
+
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      return null;
+    }
+  }
+
+  private class WaysHandler implements Route {
+
+    @Override
+    public Object handle(Request req, Response res) throws Exception {
+      JSONObject body = new JSONObject(req.body());
+      double nwLat = body.getDouble("nwLat");
+      double nwLong = body.getDouble("nwLong");
+      double seLat = body.getDouble("seLat");
+      double seLong = body.getDouble("seLong");
+      //TODO: use the global autocorrect instance to get the suggestions
+
+      List<List<String>> wayInfo = (new SQLParser(db.getFilename(), null))
+          .parseAndReturnList(SQLQueries.waysSelectAll(nwLat, nwLong, seLat, seLong));
+
+      double[][] ways = new double[wayInfo.size()][4];
+      int i = 0;
+      for (List<String> way : wayInfo) {
+        ways[i] = new double[] {Double.parseDouble(way.get(1)), Double.parseDouble(way.get(2)),
+            Double.parseDouble(way.get(3)), Double.parseDouble(way.get(4))};
+        i++;
+      }
+      //TODO: create an immutable map using the suggestions
+      Map variables = ImmutableMap.of("ways", ways);
+
+      //TODO: return a Json of the suggestions (HINT: use the GSON.Json())
+
+      return GSON.toJson(variables);
+    }
+  }
+
+
+  ///////////////////////////
+  //////STARS HANDLERS///////
+  ///////////////////////////
   private String generateStars() {
 
 
@@ -169,6 +226,27 @@ public final class Main {
         "       </svg>" +
         "     </div>" +
         "   </div>";
+  }
+
+  private String generateCell(String starId, String starName, double x, double y, double z) {
+    return "<li>\n" +
+        "          <div class = \"list-item\">\n" +
+        "            <div class = \"list-item-content\">\n" +
+        "              <i class=\"fas fa-star\" style=\"margin-right: 10px; color:hsl(" +
+        (int) (180 + 40 * Math.random()) + "," + (25 + 70 * Math.random()) + "%," +
+        (15 + 70 * Math.random()) + "%)\">  </i>\n" +
+        "                 " + starName + "\n" +
+        "              <div class = \"list-item-id\">\n" +
+        "                " + starId + "\n" +
+        "              </div>\n" +
+        "            </div>\n" +
+        "            <div style=\"flex: 1; margin: auto\">\n" +
+        "              <div class = \"list-item-coords\">\n" +
+        "                (" + x + ", " + y + ", " + z + ")\n" +
+        "              </div>\n" +
+        "            </div>\n" +
+        "          </div>\n" +
+        "        </li>";
   }
 
   /**

@@ -41,6 +41,21 @@ public class SQLQueries {
         long1 + " AND m.longitude <=" + long2 + "))";
   }
 
+  public static String waysSelectAll(Double lat1, Double long1, Double lat2, Double long2) {
+    return "" +
+        "SELECT w.id, n.latitude, n.longitude, m.latitude, m.longitude \n" +
+        "FROM way as w\n" +
+        "LEFT JOIN node as n\n" +
+        "ON w.start = n.id\n" +
+
+        "LEFT JOIN node as m\n" +
+        "ON w.end = m.id\n" +
+        "WHERE ((n.latitude <= " + lat1 + " AND n.latitude >=" + lat2 + ") AND (n.longitude >= " +
+        long1 + " AND n.longitude <= " + long2 + "))\n" +
+        "OR ((m.latitude <= " + lat1 + " AND m.latitude >=" + lat2 + ") AND (m.longitude >= " +
+        long1 + " AND m.longitude <=" + long2 + "))";
+  }
+
 
   public static String routeEdges(Double maxLat, Double minLong, Double minLat, Double maxLong) {
     return "" +
