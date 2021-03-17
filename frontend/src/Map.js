@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from "react"
 import axios from "axios"
 
-const Map = ({ corners }) => {
+const Map = ({ corners, canvasRef }) => {
     const { se, nw } = corners
     const [CANVAS_WIDTH, CANVAS_HEIGHT] = [500, 500]
-    const canvasRef = useRef(null)
+    
 
     const [activeWays, setActiveWays] = useState([])
 
@@ -23,6 +23,7 @@ const Map = ({ corners }) => {
     }
 
     const draw = context => {
+        
         context.fillStyle = '#000000'
         context.canvas.width = CANVAS_WIDTH
         context.canvas.height = CANVAS_HEIGHT
@@ -60,11 +61,12 @@ const Map = ({ corners }) => {
             ).then((res) => {
                 const ways = res.data.ways
                 console.log(ways)
-                //setActiveWays(activeWays)
+    
                 context.strokeStyle = "#FF0000";
+            
+                context.clearRect(0, 0, context.canvas.width, context.canvas.height);
                 context.beginPath()
-                context.moveTo(100,100)
-                context.lineTo(200,200)
+            
                 ways.map((way) => {
                     const wayObj = {
                         start: {latitude: way[0], longitude: way[1]}, 
