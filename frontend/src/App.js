@@ -29,10 +29,10 @@ function App() {
     if (isDragging.current) {
       console.log(e.movementX)
       setNW(nw => {
-         return {latitude: nw.latitude + 0.0001*e.movementY , longitude: nw.longitude - 1.928*0.0001*e.movementX}
+         return {latitude: nw.latitude + 0.00001*e.movementY , longitude: nw.longitude - 1.928*0.00001*e.movementX}
       })
       setSE(se => {
-        return {latitude: se.latitude + 0.0001*e.movementY , longitude: se.longitude - 1.928*0.0001*e.movementX }
+        return {latitude: se.latitude + 0.00001*e.movementY , longitude: se.longitude - 1.928*0.00001*e.movementX }
       })
     }
   }, []);
