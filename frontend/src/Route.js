@@ -44,7 +44,7 @@ const Route = ({title}) => {
         )
     }
     return(
-        <>
+        <div>
             <div>
                 <h1> {title} </h1>
 
@@ -74,7 +74,7 @@ const Route = ({title}) => {
                 }
                 
              </div>
-         </>
+         </div>
     )
 }
 

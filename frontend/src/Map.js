@@ -1,10 +1,9 @@
-import React, { useRef, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { act } from "react-dom/test-utils"
 
-const Map = ({ corners, canvasRef }) => {
+const Map = ({ corners, canvasRef, onZoom }) => {
     const { se, nw } = corners
-    const [CANVAS_WIDTH, CANVAS_HEIGHT] = [500, 500]
+    const [CANVAS_WIDTH, CANVAS_HEIGHT] = [800, 800]
 
     const TILE_ORIGIN = { latitude: 41.82686216366997, longitude: -71.40645750837325 }
     const TILE_WIDTH = -1 * (71.4000750453612 - 71.40645750837325) / 2
@@ -58,7 +57,7 @@ const Map = ({ corners, canvasRef }) => {
         }
 
         // console.log("active tiles set")
-        console.log(activeTiles)
+        //console.log(activeTiles)
 
         return activeTiles
     }
@@ -108,7 +107,7 @@ const Map = ({ corners, canvasRef }) => {
                 }
             }
         ).then((res) => {
-            console.log("Requesting tiles: " + tile)
+            //console.log("Requesting tiles: " + tile)
             const ways = res.data.ways
             const tileId = JSON.stringify(tile)
             localStorage.setItem(tileId, JSON.stringify(ways))
@@ -160,6 +159,10 @@ const Map = ({ corners, canvasRef }) => {
     //DRAW CANVAS
     useEffect(() => {
         const canvas = canvasRef.current
+
+        canvas.onmousewheel = (e) => {
+            onZoom(e.wheelDelta)
+        }
         const context = canvas.getContext('2d')
         draw(context)
 

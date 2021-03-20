@@ -8,8 +8,7 @@ function App() {
   const [nw, setNW] = useState({ latitude: 41.82686216366997, longitude: -71.40645750837325 })
   const [se, setSE] = useState({ latitude: 41.82355259953458, longitude: -71.4000750453612 })
 
-  const [tempNW, setTempNW] = useState(nw)
-  const [tempSE, setTempSE] = useState(se)
+  const [zoom, setZoom] = useState(1)
 
   const dragStartX = useRef(0)
   const dragStartY = useRef(0)
@@ -28,7 +27,7 @@ function App() {
 
   const onMouseUp = useCallback(e => {
     if (isDragging.current) {
-      console.log("end")
+      //console.log("end")
       isDragging.current = false;
 
       setNW(nw => {
@@ -40,36 +39,38 @@ function App() {
     }
   }, []);
 
-  const onMouseMove = useCallback(e => {
-    if (isDragging.current) {
-      //console.log(e.movementX)
-      // setTempNW(nw => {
-      //   return { latitude: nw.latitude + 0.00001 * e.movementY, longitude: nw.longitude - 1.928 * 0.00001 * e.movementX }
-      // })
-      // setTempSE(se => {
-      //   return { latitude: se.latitude + 0.00001 * e.movementY, longitude: se.longitude - 1.928 * 0.00001 * e.movementX }
-      // })
-    }
-  }, []);
 
+  const onZoom = useCallback(y => {
+    //console.log(y)
+    setZoom(z => z + 0.01*y)
+    setNW(nw => {
+      return { latitude: nw.latitude + 0.000005 * -1 * (y), longitude: nw.longitude + 1.928 * 0.000005 * (y) }
+    })
+    setSE(se => {
+      return { latitude: se.latitude + 0.000005 * (y), longitude: se.longitude - 1.928 * 0.000005 * (y) }
+    })
+
+    console.log(zoom)
+
+  }, [zoom])
   useEffect(() => {
     document.addEventListener("mouseup", onMouseUp);
     document.addEventListener("mousedown", onMouseDown);
-    //document.addEventListener("mousemove", onMouseMove);
     return () => {
       document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousedown", onMouseDown);
-      //document.removeEventListener("mousemove", onMouseMove);
     };
   }, [onMouseDown, onMouseUp]);
 
   return (
     <div className="App">
       <header className="App-header">
+       
+          <Route title="Maps" />
 
-        <Route title="Maps" />
+          <Map corners={{ nw, se }} onZoom = {onZoom} canvasRef={canvasRef} />
+       
 
-        <Map corners={{ nw, se }} canvasRef={canvasRef} />
       </header>
     </div>
   );
