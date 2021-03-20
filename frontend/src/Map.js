@@ -14,6 +14,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
     const [pointOne, setPointOne] = useState(null)
     const [pointTwo, setPointTwo] = useState(null)
 
+    const [activeRoute, setActiveRoute] = useState([])
 
     const getTileFromCoords = (latitude, longitude) => {
 
@@ -125,21 +126,6 @@ const Map = ({ corners, canvasRef, onZoom }) => {
                 return actWays.concat(ways)
             })
 
-            // context.strokeStyle = "#FF0000";
-
-            // context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-            // context.beginPath()
-
-            // ways.map((way) => {
-            //     const wayObj = {
-            //         start: {latitude: way[0], longitude: way[1]}, 
-            //         end: {latitude: way[2], longitude: way[3]}
-            //     }
-            //     drawWay(context,wayObj)
-            // })
-
-            // context.stroke();
-
         }).catch((err) => {
 
         })
@@ -157,20 +143,42 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         const lat = nw.latitude - latRange * (y) / CANVAS_HEIGHT
         const long = nw.longitude + longRange * x / CANVAS_WIDTH
 
-        if(!pointTwo && !pointOne){
-            setPointOne({latitude: lat, longitude: long})
-        } else {
-            if(pointOne && pointTwo){
 
-                console.log("poop")
-                setPointOne({latitude: lat, longitude: long})
-                setPointTwo(null)
+        axios.post(
+            "http://localhost:4567/nearest",
+            {
+                "nodeLat": lat,
+                "nodeLong": long
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
+        ).then((res) => {
+            const node = res.data.nearest
+            if(!pointTwo && !pointOne){
+                setPointOne({coords: {latitude: node[0], longitude: node[1]}, id: })
+            } else {
+                if(pointOne && pointTwo){
+                    setPointOne({latitude: node[0], longitude: node[1]})
+                    setPointTwo(null)
+    
+                } else if(pointOne) {
+                    //WHERE ROUTE CALL GOES 
+                    setPointTwo({latitude: node[0], longitude: node[1]})
+                 
 
-            } else if(pointOne) {
-                setPointTwo({latitude: lat, longitude: long})
+                }
             }
             
-        }
+
+        }).catch((err) => {
+
+        })
+
+
 
         
 
@@ -248,10 +256,17 @@ const Map = ({ corners, canvasRef, onZoom }) => {
             context.arc(n2.x, n2.y, 10, 0, Math.PI * 2, true)
             context.stroke()
         }
+
+        if(activeRoute.length != 0) {
+            //DRAW ROUTE
+            activeRoute.forEach((way) => {
+                drawWay(way);
+            })
+        }
     
         
 
-    }, [activeWays, pointOne, pointTwo])
+    }, [activeWays, pointOne, pointTwo, activeRoute])
 
 
     return (
