@@ -53,6 +53,9 @@ function App() {
     console.log(zoom)
 
   }, [zoom])
+
+
+
   useEffect(() => {
     document.addEventListener("mouseup", onMouseUp);
     document.addEventListener("mousedown", onMouseDown);

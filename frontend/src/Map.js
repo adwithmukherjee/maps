@@ -11,6 +11,10 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
     const [activeWays, setActiveWays] = useState([])
 
+    const [pointOne, setPointOne] = useState(null)
+    const [pointTwo, setPointTwo] = useState(null)
+
+
     const getTileFromCoords = (latitude, longitude) => {
 
         const tilesHeight = (latitude - TILE_ORIGIN.latitude) / TILE_HEIGHT
@@ -62,18 +66,24 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         return activeTiles
     }
 
-    const getPointsFromWay = (start, end) => {
+    const getPointFromCoords = (point) => {
 
         const latRange = nw.latitude - se.latitude
         const longRange = se.longitude - nw.longitude
 
-        const startX = CANVAS_WIDTH * (start.longitude - nw.longitude) / longRange
-        const startY = CANVAS_HEIGHT * -1 * (start.latitude - nw.latitude) / latRange
+        const startX = CANVAS_WIDTH * (point.longitude - nw.longitude) / longRange
+        const startY = CANVAS_HEIGHT * -1 * (point.latitude - nw.latitude) / latRange
 
-        const endX = CANVAS_WIDTH * (end.longitude - nw.longitude) / longRange
-        const endY = CANVAS_HEIGHT * -1 * (end.latitude - nw.latitude) / latRange
+        return {x: startX, y: startY}
+    }
 
-        return { start: { x: startX, y: startY }, end: { x: endX, y: endY } }
+    const getPointsFromWay = (n1, n2) => {
+
+        const start = getPointFromCoords(n1)
+
+        const end = getPointFromCoords(n2)
+
+        return { start, end }
     }
 
     const draw = context => {
@@ -135,6 +145,46 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         })
     }
 
+    const onDoubleClick = (e) => {
+        const canvas = canvasRef.current
+        const rect = canvas.getBoundingClientRect()
+        const x = e.pageX - rect.x
+        const y = e.pageY - rect.y
+
+        const latRange = nw.latitude - se.latitude
+        const longRange = se.longitude - nw.longitude
+
+        const lat = nw.latitude - latRange * (y) / CANVAS_HEIGHT
+        const long = nw.longitude + longRange * x / CANVAS_WIDTH
+
+        if(!pointTwo && !pointOne){
+            setPointOne({latitude: lat, longitude: long})
+        } else {
+            if(pointOne && pointTwo){
+
+                console.log("poop")
+                setPointOne({latitude: lat, longitude: long})
+                setPointTwo(null)
+
+            } else if(pointOne) {
+                setPointTwo({latitude: lat, longitude: long})
+            }
+            
+        }
+
+        
+
+
+    }
+
+    useEffect(()=>{
+
+        document.addEventListener("dblclick", onDoubleClick)
+        return () => {
+          document.removeEventListener("dblclick", onDoubleClick);
+        };
+    })
+
     useEffect(() => {
 
         setActiveWays([])
@@ -180,7 +230,28 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         })
         context.stroke();
 
-    }, [activeWays])
+        
+        
+
+        context.strokeStyle = "#00FF00";
+        
+        if(pointOne){
+            const n1 = getPointFromCoords(pointOne)
+            context.beginPath()
+            context.arc(n1.x, n1.y, 10, 0, Math.PI * 2, true)
+            context.stroke()
+        }
+        
+        if(pointTwo){
+            const n2 = getPointFromCoords(pointTwo)
+            context.beginPath()
+            context.arc(n2.x, n2.y, 10, 0, Math.PI * 2, true)
+            context.stroke()
+        }
+    
+        
+
+    }, [activeWays, pointOne, pointTwo])
 
 
     return (
