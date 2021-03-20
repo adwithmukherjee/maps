@@ -163,7 +163,8 @@ public final class Main {
     //Setup Maps Routes
     DBReference _db = new DBReference();
     Spark.post("/ways", new WaysHandler());
-    Spark.post("/route",new RouteHandler());
+    Spark.post("/nacroute",new NameAndCoordRouteHandler());
+    Spark.post("/croute",new CoordsRouteHandler());
     Spark.post("/nearest",new NearestHandler());
 
 
@@ -174,7 +175,7 @@ public final class Main {
   ///////////////////////////
   //////MAPS HANDLERS////////
   ///////////////////////////
-  private class RouteHandler implements Route {
+  private class NameAndCoordRouteHandler implements Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -197,6 +198,28 @@ public final class Main {
 //      if (node1Id.equals("") ) {
 //        throw new Exception("no intersection found");
 //      }
+      db.getGraph().clear();
+      List<Way> route = db.getGraph().routeFromNodeIds(node1Id,node2Id);
+      Double[][] results = new Double[route.size()][4];
+      int i = 0;
+      for (Way way : route) {
+        Double[] val = new Double[] {way.from().getCoords().get(0), way.from().getCoords().get(1),
+            way.to().getCoords().get(0), way.to().getCoords().get(1)};
+        results[i] = val;
+        i++;
+      };
+      Map variables = ImmutableMap.of("route",results);
+      return GSON.toJson(variables);
+    }
+  }
+
+  private class CoordsRouteHandler implements Route {
+
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject body = new JSONObject((request.body()));
+      String node1Id = body.getString("node1Id");
+      String node2Id = body.getString("node2Id");
       db.getGraph().clear();
       List<Way> route = db.getGraph().routeFromNodeIds(node1Id,node2Id);
       Double[][] results = new Double[route.size()][4];
@@ -254,7 +277,7 @@ public final class Main {
       List<KDNode<MapNode>> nearest = db.getTree()
           .nearest(1, nodeLat, nodeLong);
       Double[] results = new Double[] {nearest.get(0).getValue().getCoords().get(0),nearest.get(0).getValue().getCoords().get(1)};
-      Map variables = ImmutableMap.of("nearest", results);
+      Map variables = ImmutableMap.of("coords", results, "id", nearest.get(0).getValue().getId();
       return GSON.toJson(variables);
     }
   }
