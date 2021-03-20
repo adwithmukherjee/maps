@@ -23,7 +23,9 @@ import edu.brown.cs.amukhe12.maps.REPL.EventKey;
 import edu.brown.cs.amukhe12.maps.REPL.REPL;
 import edu.brown.cs.amukhe12.maps.csvparser.CSVParser;
 import edu.brown.cs.amukhe12.maps.maps.DBReference;
+import edu.brown.cs.amukhe12.maps.maps.MapNode;
 import edu.brown.cs.amukhe12.maps.maps.SQLQueries;
+import edu.brown.cs.amukhe12.maps.maps.Way;
 import edu.brown.cs.amukhe12.maps.sqlparser.SQLParser;
 import edu.brown.cs.amukhe12.maps.stars.PersonList;
 import edu.brown.cs.amukhe12.maps.stars.Star;
@@ -160,6 +162,9 @@ public final class Main {
     //Setup Maps Routes
     DBReference _db = new DBReference();
     Spark.post("/ways", new WaysHandler());
+    Spark.post("/route",new RouteHandler());
+
+
 
 
   }
@@ -171,7 +176,37 @@ public final class Main {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-      return null;
+     JSONObject body = new JSONObject((request.body()));
+     String street = body.getString("street");
+     String cross = body.getString("cross");
+     String node2Id = body.getString("node2Id");
+     // NOTE: need to catch if null
+     List<String> intersection = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross)).get(0);
+     System.out.println(intersection);
+      String node1Id = "";
+      for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+          if (intersection.get(i).equals(intersection.get(2 + j))) {
+            node1Id = intersection.get(i);
+            break;
+          }
+        }
+      }
+//      if (node1Id.equals("") ) {
+//        throw new Exception("no intersection found");
+//      }
+      db.getGraph().clear();
+      List<Way> route = db.getGraph().routeFromNodeIds(node1Id,node2Id);
+      Double[][] results = new Double[route.size()][4];
+      int i = 0;
+      for (Way way : route) {
+        Double[] val = new Double[] {way.from().getCoords().get(0), way.from().getCoords().get(1),
+            way.to().getCoords().get(0), way.to().getCoords().get(1)};
+        results[i] = val;
+        i++;
+      };
+      Map variables = ImmutableMap.of("route",results);
+      return GSON.toJson(variables);
     }
   }
 
