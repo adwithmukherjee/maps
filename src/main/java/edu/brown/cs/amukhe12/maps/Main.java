@@ -22,6 +22,7 @@ import edu.brown.cs.amukhe12.maps.Events.stars.StarsAction;
 import edu.brown.cs.amukhe12.maps.REPL.EventKey;
 import edu.brown.cs.amukhe12.maps.REPL.REPL;
 import edu.brown.cs.amukhe12.maps.csvparser.CSVParser;
+import edu.brown.cs.amukhe12.maps.kdtree.KDNode;
 import edu.brown.cs.amukhe12.maps.maps.DBReference;
 import edu.brown.cs.amukhe12.maps.maps.MapNode;
 import edu.brown.cs.amukhe12.maps.maps.SQLQueries;
@@ -163,6 +164,7 @@ public final class Main {
     DBReference _db = new DBReference();
     Spark.post("/ways", new WaysHandler());
     Spark.post("/route",new RouteHandler());
+    Spark.post("/nearest",new NearestHandler());
 
 
 
@@ -236,6 +238,23 @@ public final class Main {
 
       //TODO: return a Json of the suggestions (HINT: use the GSON.Json())
 
+      return GSON.toJson(variables);
+    }
+  }
+
+  private class NearestHandler implements Route {
+
+    @Override
+    public Object handle(Request req, Response res) throws Exception {
+      JSONObject body = new JSONObject(req.body());
+      double nodeLat = body.getDouble("nodeLat");
+      double nodeLong = body.getDouble("nodeLong");
+
+      NearestMapAction nearestMapAction = new NearestMapAction(db);
+      List<KDNode<MapNode>> nearest = db.getTree()
+          .nearest(1, nodeLat, nodeLong);
+      Double[] results = new Double[] {nearest.get(0).getValue().getCoords().get(0),nearest.get(0).getValue().getCoords().get(1)};
+      Map variables = ImmutableMap.of("nearest", results);
       return GSON.toJson(variables);
     }
   }
