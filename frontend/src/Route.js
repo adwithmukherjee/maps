@@ -48,8 +48,8 @@ const Route = ({title}) => {
             <div>
                 <h1> {title} </h1>
 
-                <TextBox label = "Start Latitude" onChange = {(text) => {setCoords({...coords, srclat: text})}}/>
-                <TextBox label = "End Latitude" onChange = {(text) => {setCoords({...coords, destlat: text})}}/>
+                <TextBox label = "Street 1" onChange = {(text) => {setCoords({...coords, srclat: text})}}/>
+                <TextBox label = "Street 2" onChange = {(text) => {setCoords({...coords, destlat: text})}}/>
                 <TextBox label = "Start Longitude" onChange = {(text) => {setCoords({...coords, srclong: text})}}/>
                 <TextBox label = "End Longitude" onChange = {(text) => {setCoords({...coords, destlong: text})}}/>
 

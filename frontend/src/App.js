@@ -44,10 +44,10 @@ function App() {
     //console.log(y)
     setZoom(z => z + 0.01*y)
     setNW(nw => {
-      return { latitude: nw.latitude + 0.000005 * -1 * (y), longitude: nw.longitude + 1.928 * 0.000005 * (y) }
+      return { latitude: nw.latitude + 0.0000001 * -1 * (y), longitude: nw.longitude + 1.928 * 0.0000001 * (y) }
     })
     setSE(se => {
-      return { latitude: se.latitude + 0.000005 * (y), longitude: se.longitude - 1.928 * 0.000005 * (y) }
+      return { latitude: se.latitude + 0.0000001 * (y), longitude: se.longitude - 1.928 * 0.0000001 * (y) }
     })
 
     console.log(zoom)

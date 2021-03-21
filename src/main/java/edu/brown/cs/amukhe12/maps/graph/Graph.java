@@ -62,14 +62,16 @@ public class Graph<N extends Node, E extends Edge> {
     if (!this.containsNodeWithId(u.getId()) || !this.containsNodeWithId(v.getId())) {
       throw new Exception("No such Node found when inserting Edge");
     }
-    if (this.containsEdgeWithId(e.getId())) {
-      throw new Exception("Edge already exists in Graph");
+    if (!this.containsEdgeWithId(e.getId())) {
+
+      //throw new Exception("Edge already exists in Graph");
+      _edges.put(e.getId(), e);
+      e.setFrom(u);
+      e.setTo(v);
+      u.addOutEdge(e);
+      v.addInEdge(e);
     }
-    _edges.put(e.getId(), e);
-    e.setFrom(u);
-    e.setTo(v);
-    u.addOutEdge(e);
-    v.addInEdge(e);
+
   }
 
   /**

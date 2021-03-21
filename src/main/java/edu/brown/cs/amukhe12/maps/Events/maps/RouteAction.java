@@ -48,27 +48,20 @@ public class RouteAction implements IEvent {
           double long1 = Double.parseDouble(args.get(1));
           double lat2 = Double.parseDouble(args.get(2));
           double long2 = Double.parseDouble(args.get(3));
+
           double minLong = Math.min(long1, long2);
           double maxLong = Math.max(long1, long2);
           double minLat = Math.min(lat1, lat2);
           double maxLat = Math.max(lat1, lat2);
 
-          double deltaLat = Math.abs(maxLat - minLat) / 2;
-          double deltaLong = Math.abs(maxLong - minLong) / 2;
-
           MapNode node1 = _db.getTree().nearest(1, lat1, long1).get(0).getValue();
           MapNode node2 = _db.getTree().nearest(1, lat2, long2).get(0).getValue();
-          double radius = node1.distanceTo(node2);
 
-//          new SQLParser(_db.getFilename(), _map)
-//              .parse(
-//                  SQLQueries.routeEdges(maxLat + deltaLat, minLong - deltaLong, minLat - deltaLat,
-//                      maxLong + deltaLong));
 
           List<Way> route =
               _map.routeFromNodeIds(node1.getId(), node2.getId());
           List<String> results = new ArrayList<>();
-          //System.out.println("done?");
+
           for (Way way : route) {
             String val = "" + way.from().getId() + " -> " + way.to().getId() + " : " + way.getId();
             System.out
@@ -80,6 +73,7 @@ public class RouteAction implements IEvent {
           }
           _map.clearEdges();
           _db.cache(command, results);
+
         } catch (Exception e) {
           try {
             String str11 = args.get(0).replaceAll("\"", "");

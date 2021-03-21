@@ -277,7 +277,7 @@ public final class Main {
       List<KDNode<MapNode>> nearest = db.getTree()
           .nearest(1, nodeLat, nodeLong);
       Double[] results = new Double[] {nearest.get(0).getValue().getCoords().get(0),nearest.get(0).getValue().getCoords().get(1)};
-      Map variables = ImmutableMap.of("coords", results, "id", nearest.get(0).getValue().getId();
+      Map variables = ImmutableMap.of("coords", results, "id", nearest.get(0).getValue().getId());
       return GSON.toJson(variables);
     }
   }

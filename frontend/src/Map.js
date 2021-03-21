@@ -157,18 +157,19 @@ const Map = ({ corners, canvasRef, onZoom }) => {
                 }
             }
         ).then((res) => {
-            const node = res.data.nearest
+            const { coords, id } = res.data
             if(!pointTwo && !pointOne){
-                setPointOne({coords: {latitude: node[0], longitude: node[1]}, id: })
+                setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                
             } else {
                 if(pointOne && pointTwo){
-                    setPointOne({latitude: node[0], longitude: node[1]})
+                    setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
                     setPointTwo(null)
+                    setActiveRoute([])
     
                 } else if(pointOne) {
                     //WHERE ROUTE CALL GOES 
-                    setPointTwo({latitude: node[0], longitude: node[1]})
-                 
+                    setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id })
 
                 }
             }
@@ -178,12 +179,37 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
         })
 
-
-
-        
-
-
     }
+
+    useEffect(() => {
+        if(pointTwo){
+          
+            axios.post(
+                "http://localhost:4567/croute", 
+                {
+                    "node1Id": pointOne.id, 
+                    "node2Id": pointTwo.id
+                }, 
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }
+            ).then((res) => {
+                const routeWays = res.data.route
+                routeWays.forEach((routeWay) => {
+                    setActiveRoute(actRoute => {
+                        return actRoute.concat({start: {latitude: routeWay[0], longitude: routeWay[1]}, end: {latitude: routeWay[2],longitude: routeWay[3]}})
+                    })
+                })
+            }).catch((err) => {
+                console.log("error")
+            })
+        }
+
+
+    }, [pointTwo])
 
     useEffect(()=>{
 
@@ -244,14 +270,14 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         context.strokeStyle = "#00FF00";
         
         if(pointOne){
-            const n1 = getPointFromCoords(pointOne)
+            const n1 = getPointFromCoords(pointOne.coords)
             context.beginPath()
             context.arc(n1.x, n1.y, 10, 0, Math.PI * 2, true)
             context.stroke()
         }
         
         if(pointTwo){
-            const n2 = getPointFromCoords(pointTwo)
+            const n2 = getPointFromCoords(pointTwo.coords)
             context.beginPath()
             context.arc(n2.x, n2.y, 10, 0, Math.PI * 2, true)
             context.stroke()
@@ -259,9 +285,11 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
         if(activeRoute.length != 0) {
             //DRAW ROUTE
+            context.beginPath()
             activeRoute.forEach((way) => {
-                drawWay(way);
+                 drawWay(context, way);
             })
+            context.stroke()
         }
     
         
