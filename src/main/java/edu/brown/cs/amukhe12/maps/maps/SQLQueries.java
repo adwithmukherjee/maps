@@ -43,7 +43,7 @@ public class SQLQueries {
 
   public static String waysSelectAll(Double lat1, Double long1, Double lat2, Double long2) {
     return "" +
-        "SELECT w.id, n.latitude, n.longitude, m.latitude, m.longitude \n" +
+        "SELECT w.id, n.latitude, n.longitude, m.latitude, m.longitude, w.name, w.type \n" +
         "FROM way as w\n" +
         "LEFT JOIN node as n\n" +
         "ON w.start = n.id\n" +

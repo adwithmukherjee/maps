@@ -1,59 +1,72 @@
-import React,  { useState } from "react"
+import React,  { useState, useRef, useEffect } from "react"
 import TextBox from "./TextBox"
 import { AwesomeButton } from "react-awesome-button"
-import axios from "axios"
+import nearest from "./axios/nearest"
+
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss"
 
-const Route = ({title}) => {
+const Route = ({title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRoute}) => {
 
     const [route, setRoute] = useState([])
-    const [coords, setCoords] = useState({
-        srclat: 0, 
-        srclong: 0,
-        destlat: 0, 
-        destlong: 0
-    })
+ 
+    const startLat = useRef(null)
+    const startLong = useRef(null)
+    const endLat = useRef(null)
+    const endLong = useRef(null)
 
-    const handleSubmit = async () => {
-        const res = axios.post(
-            "http://localhost:4567/route", 
-            coords, 
-            {
-                headers: {
-                  "Content-Type": "application/json",
-                  'Access-Control-Allow-Origin': '*',
-                  }
+    const handleSubmit = () => {
+
+
+        if(startLat && endLat){
+            const lat1 = parseFloat(startLat.current.value)
+            const long1 = parseFloat(startLong.current.value)
+            const lat2 = parseFloat(endLat.current.value)
+            const long2 = parseFloat(endLong.current.value)
+
+            const onPointOneEntered = (res) => {
+                const { coords, id } = res.data
+                setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
             }
-        )
-
-        setRoute((await res).data.route)
-        console.log((await res).data.route)
+            const onPointTwoEntered = (res) => {
+                const { coords, id } = res.data
+                setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id })
+            }
+            if(lat1 && long1 && lat2 && long2){
+             
+                nearest(lat1, long1, onPointOneEntered)
+                nearest(lat2, long2, onPointTwoEntered)
+            }
+        }
+        
     }
 
-    const showRoute = () => {
-        return (
-            route.length == 0 
-            ? <div></div>
-            : <div>
-            { 
-                route.map((item) => {
-                    return <div> {"" + item[0] + ", " + item[1]} </div>
-                })
-            }
-            </div>
-        )
-    }
+    useEffect(() => {
+        if(startLat.current && startLong.current && pointOne){
+            startLat.current.value = pointOne.coords.latitude
+            startLong.current.value = pointOne.coords.longitude
+        }
+
+    }, [pointOne])
+    useEffect(() => {
+        if(endLat.current && endLong.current && pointTwo){
+            endLat.current.value = pointTwo.coords.latitude
+            endLong.current.value = pointTwo.coords.longitude
+        }
+
+    }, [pointTwo])
+
+
     return(
         <div>
             <div>
                 <h1> {title} </h1>
+                
+                <TextBox inputRef={startLat} label = "Start Latitude" value = {pointOne ? pointOne.coords.latitude: ""} />
+                <TextBox label = "Start Longitude" value = {pointOne ? pointOne.coords.longitude: ""} inputRef = {startLong}/>
+                <TextBox label = "End Latitude" value = {pointTwo ? pointTwo.coords.latitude: ""} inputRef = {endLat}/>
+                <TextBox label = "End Longitude" value = {pointTwo ? pointTwo.coords.longitude: ""} inputRef={endLong} />
 
-                <TextBox label = "Street 1" onChange = {(text) => {setCoords({...coords, srclat: text})}}/>
-                <TextBox label = "Street 2" onChange = {(text) => {setCoords({...coords, destlat: text})}}/>
-                <TextBox label = "Start Longitude" onChange = {(text) => {setCoords({...coords, srclong: text})}}/>
-                <TextBox label = "End Longitude" onChange = {(text) => {setCoords({...coords, destlong: text})}}/>
-
-                {"Coordinates: (" + coords.srclat +","+ coords.srclong +"), ("+ coords.destlat +","+ coords.destlong+")" }
+                {/*"Coordinates: (" + coords.srclat +","+ coords.srclong +") -> ("+ coords.destlat +","+ coords.destlong+")"*/ }
 
              </div>
              <div>
@@ -66,14 +79,7 @@ const Route = ({title}) => {
                 </AwesomeButton>
              </div>
 
-             <div>
-                {
-                    route.length === 0
-                    ? <div></div>
-                    : <div> {showRoute()}</div>
-                }
-                
-             </div>
+
          </div>
     )
 }

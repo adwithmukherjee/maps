@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
+import Route from "./Route"
+import nearest from "./axios/nearest"
 
 const Map = ({ corners, canvasRef, onZoom }) => {
     const { se, nw } = corners
@@ -138,47 +140,34 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         const x = e.pageX - rect.x
         const y = e.pageY - rect.y
 
-        const latRange = nw.latitude - se.latitude
-        const longRange = se.longitude - nw.longitude
+        if(x>0 && y>0){
 
-        const lat = nw.latitude - latRange * (y) / CANVAS_HEIGHT
-        const long = nw.longitude + longRange * x / CANVAS_WIDTH
+            const latRange = nw.latitude - se.latitude
+            const longRange = se.longitude - nw.longitude
 
+            const lat = nw.latitude - latRange * (y) / CANVAS_HEIGHT
+            const long = nw.longitude + longRange * x / CANVAS_WIDTH
 
-        axios.post(
-            "http://localhost:4567/nearest",
-            {
-                "nodeLat": lat,
-                "nodeLong": long
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': '*',
-                }
-            }
-        ).then((res) => {
-            const { coords, id } = res.data
-            if(!pointTwo && !pointOne){
-                setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
-                
-            } else {
-                if(pointOne && pointTwo){
+            const onFoundNearest = (res) => {
+                const { coords, id } = res.data
+                if(!pointTwo && !pointOne){
                     setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
-                    setPointTwo(null)
-                    setActiveRoute([])
-    
-                } else if(pointOne) {
-                    //WHERE ROUTE CALL GOES 
-                    setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id })
 
+                } else {
+                    if(pointOne && pointTwo){
+                        setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                        setPointTwo(null)
+                        setActiveRoute([])
+                    
+                    } else if(pointOne) {
+                        //WHERE ROUTE CALL GOES 
+                        setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                    
+                    }
                 }
             }
-            
-
-        }).catch((err) => {
-
-        })
+            nearest(lat, long, onFoundNearest)
+        }
 
     }
 
@@ -198,6 +187,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
                     }
                 }
             ).then((res) => {
+                setActiveRoute([])
                 const routeWays = res.data.route
                 routeWays.forEach((routeWay) => {
                     setActiveRoute(actRoute => {
@@ -301,7 +291,10 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
 
     return (
-        <canvas ref={canvasRef} />
+        <>
+            <Route title="Maps!" pointOne={pointOne} pointTwo = {pointTwo} setPointOne={setPointOne} setPointTwo = {setPointTwo} setActiveRoute={setActiveRoute}/>
+            <canvas ref={canvasRef} />
+        </>
     )
 }
 
