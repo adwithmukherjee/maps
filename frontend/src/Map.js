@@ -89,9 +89,10 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
     const draw = context => {
 
-        context.fillStyle = '#000000'
+        
         context.canvas.width = CANVAS_WIDTH
         context.canvas.height = CANVAS_HEIGHT
+        context.fillStyle = '#2ca25f'
         context.fillRect(0, 0, context.canvas.width, context.canvas.height)
     }
 
@@ -250,11 +251,12 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         const context = canvas.getContext('2d')
         draw(context)
 
-        context.strokeStyle = "#FF0000";
+        context.strokeStyle = "#FFFFFF";
+        
 
         //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         context.beginPath()
-
+        context.lineWidth = 4
         activeWays.map((way) => {
             const wayObj = {
                 start: { latitude: way[0], longitude: way[1] },
@@ -267,7 +269,8 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         
         
 
-        context.strokeStyle = "#00FF00";
+        context.strokeStyle = "#FF0000";
+        context.lineWidth = 5
         
         if(pointOne){
             const n1 = getPointFromCoords(pointOne.coords)

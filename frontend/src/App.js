@@ -50,8 +50,6 @@ function App() {
       return { latitude: se.latitude + 0.0000001 * (y), longitude: se.longitude - 1.928 * 0.0000001 * (y) }
     })
 
-    console.log(zoom)
-
   }, [zoom])
 
 
