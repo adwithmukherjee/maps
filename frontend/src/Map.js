@@ -77,7 +77,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         const startX = CANVAS_WIDTH * (point.longitude - nw.longitude) / longRange
         const startY = CANVAS_HEIGHT * -1 * (point.latitude - nw.latitude) / latRange
 
-        return {x: startX, y: startY}
+        return { x: startX, y: startY }
     }
 
     const getPointsFromWay = (n1, n2) => {
@@ -91,7 +91,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
     const draw = context => {
 
-        
+
         context.canvas.width = CANVAS_WIDTH
         context.canvas.height = CANVAS_HEIGHT
         context.fillStyle = '#2ca25f'
@@ -140,7 +140,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         const x = e.pageX - rect.x
         const y = e.pageY - rect.y
 
-        if(x>0 && y>0){
+        if (x > 0 && y > 0) {
 
             const latRange = nw.latitude - se.latitude
             const longRange = se.longitude - nw.longitude
@@ -150,19 +150,19 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
             const onFoundNearest = (res) => {
                 const { coords, id } = res.data
-                if(!pointTwo && !pointOne){
-                    setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                if (!pointTwo && !pointOne) {
+                    setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
 
                 } else {
-                    if(pointOne && pointTwo){
-                        setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                    if (pointOne && pointTwo) {
+                        setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
                         setPointTwo(null)
                         setActiveRoute([])
-                    
-                    } else if(pointOne) {
+
+                    } else if (pointOne) {
                         //WHERE ROUTE CALL GOES 
-                        setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id })
-                    
+                        setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
+
                     }
                 }
             }
@@ -172,14 +172,14 @@ const Map = ({ corners, canvasRef, onZoom }) => {
     }
 
     useEffect(() => {
-        if(pointTwo){
-          
+        if (pointTwo) {
+
             axios.post(
-                "http://localhost:4567/croute", 
+                "http://localhost:4567/croute",
                 {
-                    "node1Id": pointOne.id, 
+                    "node1Id": pointOne.id,
                     "node2Id": pointTwo.id
-                }, 
+                },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -191,7 +191,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
                 const routeWays = res.data.route
                 routeWays.forEach((routeWay) => {
                     setActiveRoute(actRoute => {
-                        return actRoute.concat({start: {latitude: routeWay[0], longitude: routeWay[1]}, end: {latitude: routeWay[2],longitude: routeWay[3]}})
+                        return actRoute.concat({ start: { latitude: routeWay[0], longitude: routeWay[1] }, end: { latitude: routeWay[2], longitude: routeWay[3] } })
                     })
                 })
             }).catch((err) => {
@@ -202,11 +202,11 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
     }, [pointTwo])
 
-    useEffect(()=>{
+    useEffect(() => {
 
         document.addEventListener("dblclick", onDoubleClick)
         return () => {
-          document.removeEventListener("dblclick", onDoubleClick);
+            document.removeEventListener("dblclick", onDoubleClick);
         };
     })
 
@@ -242,7 +242,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         draw(context)
 
         context.strokeStyle = "#FFFFFF";
-        
+
 
         //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         context.beginPath()
@@ -256,43 +256,43 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         })
         context.stroke();
 
-        
-        
+
+
 
         context.strokeStyle = "#FF0000";
         context.lineWidth = 5
-        
-        if(pointOne){
+
+        if (pointOne) {
             const n1 = getPointFromCoords(pointOne.coords)
             context.beginPath()
             context.arc(n1.x, n1.y, 10, 0, Math.PI * 2, true)
             context.stroke()
         }
-        
-        if(pointTwo){
+
+        if (pointTwo) {
             const n2 = getPointFromCoords(pointTwo.coords)
             context.beginPath()
             context.arc(n2.x, n2.y, 10, 0, Math.PI * 2, true)
             context.stroke()
         }
 
-        if(activeRoute.length != 0) {
+        if (activeRoute.length != 0) {
             //DRAW ROUTE
             context.beginPath()
             activeRoute.forEach((way) => {
-                 drawWay(context, way);
+                drawWay(context, way);
             })
             context.stroke()
         }
-    
-        
+
+
 
     }, [activeWays, pointOne, pointTwo, activeRoute])
 
 
     return (
         <>
-            <Route title="Maps!" pointOne={pointOne} pointTwo = {pointTwo} setPointOne={setPointOne} setPointTwo = {setPointTwo} setActiveRoute={setActiveRoute}/>
+            <Route title="Maps!" pointOne={pointOne} pointTwo={pointTwo} setPointOne={setPointOne} setPointTwo={setPointTwo} setActiveRoute={setActiveRoute} />
             <canvas ref={canvasRef} />
         </>
     )
