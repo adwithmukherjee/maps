@@ -1,14 +1,14 @@
-import React,  { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import TextBox from "./TextBox"
 import { AwesomeButton } from "react-awesome-button"
 import nearest from "./axios/nearest"
 
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss"
 
-const Route = ({title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRoute}) => {
+const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRoute }) => {
 
     const [route, setRoute] = useState([])
- 
+
     const startLat = useRef(null)
     const startLong = useRef(null)
     const endLat = useRef(null)
@@ -17,7 +17,7 @@ const Route = ({title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRo
     const handleSubmit = () => {
 
 
-        if(startLat && endLat){
+        if (startLat && endLat) {
             const lat1 = parseFloat(startLat.current.value)
             const long1 = parseFloat(startLong.current.value)
             const lat2 = parseFloat(endLat.current.value)
@@ -25,30 +25,36 @@ const Route = ({title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRo
 
             const onPointOneEntered = (res) => {
                 const { coords, id } = res.data
-                setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
             }
             const onPointTwoEntered = (res) => {
                 const { coords, id } = res.data
-                setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id })
+                setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
             }
-            if(lat1 && long1 && lat2 && long2){
-             
+            if (lat1 && long1 && lat2 && long2) {
+
                 nearest(lat1, long1, onPointOneEntered)
                 nearest(lat2, long2, onPointTwoEntered)
             }
         }
-        
+
+    }
+
+    const handleClearRoute = () => {
+        setActiveRoute([])
+        setPointOne(null)
+        setPointTwo(null)
     }
 
     useEffect(() => {
-        if(startLat.current && startLong.current && pointOne){
+        if (startLat.current && startLong.current && pointOne) {
             startLat.current.value = pointOne.coords.latitude
             startLong.current.value = pointOne.coords.longitude
         }
 
     }, [pointOne])
     useEffect(() => {
-        if(endLat.current && endLong.current && pointTwo){
+        if (endLat.current && endLong.current && pointTwo) {
             endLat.current.value = pointTwo.coords.latitude
             endLong.current.value = pointTwo.coords.longitude
         }
@@ -56,31 +62,41 @@ const Route = ({title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRo
     }, [pointTwo])
 
 
-    return(
+    return (
         <div>
             <div>
                 <h1> {title} </h1>
-                
-                <TextBox inputRef={startLat} label = "Start Latitude" value = {pointOne ? pointOne.coords.latitude: ""} />
-                <TextBox label = "Start Longitude" value = {pointOne ? pointOne.coords.longitude: ""} inputRef = {startLong}/>
-                <TextBox label = "End Latitude" value = {pointTwo ? pointTwo.coords.latitude: ""} inputRef = {endLat}/>
-                <TextBox label = "End Longitude" value = {pointTwo ? pointTwo.coords.longitude: ""} inputRef={endLong} />
 
-                {/*"Coordinates: (" + coords.srclat +","+ coords.srclong +") -> ("+ coords.destlat +","+ coords.destlong+")"*/ }
+                <TextBox inputRef={startLat} label="Start Latitude" value={pointOne ? pointOne.coords.latitude : ""} />
+                <TextBox label="Start Longitude" value={pointOne ? pointOne.coords.longitude : ""} inputRef={startLong} />
+                <TextBox label="End Latitude" value={pointTwo ? pointTwo.coords.latitude : ""} inputRef={endLat} />
+                <TextBox label="End Longitude" value={pointTwo ? pointTwo.coords.longitude : ""} inputRef={endLong} />
 
-             </div>
-             <div>
+                {/*"Coordinates: (" + coords.srclat +","+ coords.srclong +") -> ("+ coords.destlat +","+ coords.destlong+")"*/}
+
+            </div>
+            <div>
                 <AwesomeButton
-                   //cssModule={AwesomeButtonStyles}
-                   type = "primary"
-                   onPress = {handleSubmit}
+                    //cssModule={AwesomeButtonStyles}
+                    type="primary"
+                    onPress={handleSubmit}
                 >
                     Submit
                 </AwesomeButton>
-             </div>
+            </div>
+
+            <div>
+                <AwesomeButton
+                    //cssModule={AwesomeButtonStyles}
+                    type="primary"
+                    onPress={handleClearRoute}
+                >
+                    Clear Route
+                </AwesomeButton>
+            </div>
 
 
-         </div>
+        </div>
     )
 }
 
