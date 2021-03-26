@@ -64,13 +64,13 @@ function MapController() {
   }, [onMouseDown, onMouseUp]);
 
   return (
-    <div className="App">
-      <header className="App-header">
+   
+      <div style={{display: "flex",flexDirection:"row", textAlign: "center"}}>
 
         <Map corners={{ nw, se }} onZoom={onZoom} canvasRef={canvasRef} />
 
-      </header>
-    </div>
+      </div>
+ 
   );
 }
 

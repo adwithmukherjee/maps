@@ -5,7 +5,7 @@ import nearest from "./axios/nearest"
 
 const Map = ({ corners, canvasRef, onZoom }) => {
     const { se, nw } = corners
-    const [CANVAS_WIDTH, CANVAS_HEIGHT] = [800, 800]
+    const [CANVAS_WIDTH, CANVAS_HEIGHT] = [600, 600]
 
     const TILE_ORIGIN = { latitude: 41.82686216366997, longitude: -71.40645750837325 }
     const TILE_WIDTH = -1 * (71.4000750453612 - 71.40645750837325) / 2

@@ -1,5 +1,9 @@
 package edu.brown.cs.amukhe12.maps.maps;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class SQLQueries {
@@ -95,7 +99,31 @@ public class SQLQueries {
   public static String getOutEdges(String currentId) {
     return "SELECT w.id, w.name, w.type, w.end\n" +
         "FROM way as w\n" +
-        "WHERE w.type != '' AND w.type != 'unclassified' AND w.start = '"+currentId+"' ;";
+        "WHERE w.type != '' AND w.type != 'unclassified' AND w.start = '" + currentId + "' ;";
 
+  }
+
+  public static void dropCheckinsTable(Connection conn) throws SQLException {
+    PreparedStatement prep = conn.prepareStatement("DROP TABLE IF EXISTS checkins");
+    prep.executeUpdate();
+    prep.close();
+
+  } ;
+
+  public static void createCheckinsTable(Connection conn) throws SQLException {
+    PreparedStatement prep = conn.prepareStatement("CREATE TABLE checkins (id INTEGER NOT NULL, username VARCHAR(100), timestamp DOUBLE, latitude DOUBLE, longitude DOUBLE);");
+    prep.executeUpdate();
+    prep.close();
+  } ;
+
+  public static void insertCheckin(Connection conn, int id, String username, double timestamp, double latitude, double longitude)
+      throws SQLException {
+    PreparedStatement prep = conn.prepareStatement("INSERT INTO checkins VALUES(?,?,?,?,?);");
+    prep.setInt(1,id);
+    prep.setString(2,username);
+    prep.setDouble(3, timestamp);
+    prep.setDouble(4, latitude);
+    prep.setDouble(5, latitude);
+    prep.executeUpdate();
   }
 }

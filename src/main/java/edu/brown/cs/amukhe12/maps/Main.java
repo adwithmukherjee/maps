@@ -1,6 +1,10 @@
 package edu.brown.cs.amukhe12.maps;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +25,8 @@ import edu.brown.cs.amukhe12.maps.Events.stars.RadiusAction;
 import edu.brown.cs.amukhe12.maps.Events.stars.StarsAction;
 import edu.brown.cs.amukhe12.maps.REPL.EventKey;
 import edu.brown.cs.amukhe12.maps.REPL.REPL;
+import edu.brown.cs.amukhe12.maps.checkin.CheckinThread;
+import edu.brown.cs.amukhe12.maps.checkin.UserCheckin;
 import edu.brown.cs.amukhe12.maps.csvparser.CSVParser;
 import edu.brown.cs.amukhe12.maps.kdtree.KDNode;
 import edu.brown.cs.amukhe12.maps.maps.DBReference;
@@ -33,6 +39,8 @@ import edu.brown.cs.amukhe12.maps.stars.Star;
 import edu.brown.cs.amukhe12.maps.stars.StarList;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import org.checkerframework.checker.units.qual.C;
+import org.eclipse.jetty.server.Authentication;
 import org.json.JSONException;
 import org.json.JSONObject;
 import spark.ExceptionHandler;
@@ -58,13 +66,14 @@ public final class Main {
   private static final int DEFAULT_PORT = 4567;
   private static final Gson GSON = new Gson();
   private DBReference db = new DBReference();
+  private CheckinThread thread;
 
   /**
    * The initial method called when execution begins.
    *
    * @param args An array of command line arguments
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws SQLException, ClassNotFoundException {
     new Main(args).run();
   }
 
@@ -75,7 +84,7 @@ public final class Main {
     this.args = args;
   }
 
-  private void run() {
+  private void run() throws SQLException, ClassNotFoundException {
     // Parse command line arguments
     OptionParser parser = new OptionParser();
     parser.accepts("gui");
@@ -105,6 +114,9 @@ public final class Main {
       events.add(new EventKey("nearest", new NearestMapAction(db)));
       events.add(new EventKey("ways", new WaysAction(db)));
       events.add(new EventKey("route", new RouteAction(db)));
+
+      thread = new CheckinThread();
+      thread.start();
 
       REPL repl = new REPL(events);
 
@@ -162,16 +174,61 @@ public final class Main {
 //    Spark.post("/radius", new RadiusHandler(stars, fireflies), freeMarker);
 
     //Setup Maps Routes
+
     DBReference _db = new DBReference();
+
     Spark.post("/ways", new WaysHandler());
     Spark.post("/nacroute",new NameAndCoordRouteHandler());
     Spark.post("/croute",new CoordsRouteHandler());
     Spark.post("/nearest",new NearestHandler());
     Spark.post("/intersection", new IntersectionHandler());
+    Spark.post("/checkin", new CheckinHandler());
 
 
+  }
 
+  ///////CHECKIN SERVER//////
 
+  private class CheckinHandler implements Route {
+
+    private Connection conn = null;
+
+    public CheckinHandler() {
+
+      try {
+        Class.forName("org.sqlite.JDBC");
+        String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
+        this.conn=DriverManager.getConnection(urlToDB);
+      } catch(Exception e) {
+        System.out.println("ERROR: could not connect to maps database");
+      }
+
+      try {
+        SQLQueries.dropCheckinsTable(this.conn);
+        SQLQueries.createCheckinsTable(this.conn);
+      }catch(Exception e){
+        e.printStackTrace();
+        System.out.println("ERROR: could not create checking table");
+      }
+    }
+
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+
+      Map<Double, UserCheckin> users = thread.getLatestCheckins();
+
+      String[][] userInfo = new String[users.size()][5];
+      int i = 0;
+
+      for (Double timestamp: users.keySet()){
+        UserCheckin user = users.get(timestamp);
+        userInfo[i] = new String[]{timestamp.toString(), ""+user.getId(), user.getName(), ""+user.getLat(), ""+user.getLon()};
+        i++;
+      }
+
+      Map variables = ImmutableMap.of("users",userInfo);
+      return GSON.toJson(variables);
+    }
   }
 
   ///////////////////////////
