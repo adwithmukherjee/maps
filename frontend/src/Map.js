@@ -163,14 +163,17 @@ const Map = ({ corners, canvasRef, onZoom }) => {
                         //WHERE ROUTE CALL GOES 
                         setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
                     }
+                    else if (!pointOne && pointTwo) {
+                        //WHERE ROUTE CALL GOES
+                        setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
+                    }
                 }
             }
             nearest(lat, long, onFoundNearest)
         }
 
     }
-
-    // NOTE: if we want to be able to input then have to add this on pointOne too, but when we do that third click messes it up
+    
     useEffect(() => {
         if (pointTwo && pointOne) {
 
