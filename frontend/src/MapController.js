@@ -41,7 +41,7 @@ function MapController() {
 
   const onZoom = useCallback(y => {
     //console.log(y)
-    setZoom(z => z + 0.01*y)
+    setZoom(z => z + 0.01 * y)
     setNW(nw => {
       return { latitude: nw.latitude + 0.0000001 * -1 * (y), longitude: nw.longitude + 1.928 * 0.0000001 * (y) }
     })
@@ -66,9 +66,9 @@ function MapController() {
   return (
     <div className="App">
       <header className="App-header">
-       
-          <Map corners={{ nw, se }} onZoom = {onZoom} canvasRef={canvasRef} />
-       
+
+        <Map corners={{ nw, se }} onZoom={onZoom} canvasRef={canvasRef} />
+
       </header>
     </div>
   );

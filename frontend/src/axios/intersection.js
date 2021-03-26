@@ -1,11 +1,11 @@
 import axios from "axios"
 
-export default function (lat, long, callback) {
+export default function (street, cross, callback) {
     axios.post(
-        "http://localhost:4567/nearest",
+        "http://localhost:4567/intersection",
         {
-            "nodeLat": lat,
-            "nodeLong": long
+            "street": street,
+            "cross": cross
         },
         {
             headers: {

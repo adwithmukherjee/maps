@@ -48,6 +48,7 @@ import spark.template.freemarker.FreeMarkerEngine;
 import com.google.common.collect.ImmutableMap;
 
 import freemarker.template.Configuration;
+//import jdk.nashorn.internal.ir.annotations.Immutable;
 
 /**
  * The Main class of our project. This is where execution begins.
@@ -166,6 +167,7 @@ public final class Main {
     Spark.post("/nacroute",new NameAndCoordRouteHandler());
     Spark.post("/croute",new CoordsRouteHandler());
     Spark.post("/nearest",new NearestHandler());
+    Spark.post("/intersection", new IntersectionHandler());
 
 
 
@@ -185,7 +187,7 @@ public final class Main {
      String node2Id = body.getString("node2Id");
      // NOTE: need to catch if null
      List<String> intersection = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross)).get(0);
-     System.out.println(intersection);
+//     System.out.println(intersection);
       String node1Id = "";
       for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
@@ -278,6 +280,53 @@ public final class Main {
           .nearest(1, nodeLat, nodeLong);
       Double[] results = new Double[] {nearest.get(0).getValue().getCoords().get(0),nearest.get(0).getValue().getCoords().get(1)};
       Map variables = ImmutableMap.of("coords", results, "id", nearest.get(0).getValue().getId());
+      return GSON.toJson(variables);
+    }
+  }
+
+  private class IntersectionHandler implements Route {
+
+    @Override
+    public Object handle(Request req, Response res) throws Exception {
+      JSONObject body = new JSONObject(req.body());
+      String street = body.getString("street");
+      String cross = body.getString("cross");
+
+      String str11 = street.replaceAll("\"", "");
+      String str12 = cross.replaceAll("\"", "");
+
+//      List<String> node1Ids = new SQLParser( db.getFilename(), null)
+//                .parseAndReturnList(SQLQueries.streetIntersect(str11, str12)).get(0);
+
+      List<String> intersection = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross)).get(0);
+
+
+      String node1Id = "";
+      for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+          if (intersection.get(i).equals(intersection.get(2 + j))) {
+            node1Id = intersection.get(i);
+            break;
+          }
+        }
+      }
+//      String node1Id = "";
+//      String node2Id = "";
+//       for (int i = 0; i < 2; i++) {
+//          for (int j = 0; j < 2; j++) {
+//              if (node1Ids.get(i).equals(node1Ids.get(2 + j))) {
+//                  node1Id = node1Ids.get(i);
+//                 }
+//            }
+//        }
+
+
+      MapNode node1 = db.getGraph().getNodeFromId(node1Id);
+         double lat1 = node1.getCoords().get(0);
+         double long1 = node1.getCoords().get(1);
+
+         Double[] results = new Double[] {lat1 , long1};
+         Map variables = ImmutableMap.of("coords", results, "id", node1Id);
       return GSON.toJson(variables);
     }
   }

@@ -2,8 +2,8 @@
 import MapController from "./MapController"
 
 function App() {
-    return(
-        <MapController/>
+    return (
+        <MapController />
     )
 }
 
