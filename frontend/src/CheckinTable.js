@@ -16,7 +16,7 @@ const CheckinTable = () => {
                 latitude: parseFloat(user[3]), 
                 longitude: parseFloat(user[4])
             }    
-            console.log(userObj)
+            // console.log(userObj)
             setUsers(users => {
                 return users.concat(userObj)
             })        
