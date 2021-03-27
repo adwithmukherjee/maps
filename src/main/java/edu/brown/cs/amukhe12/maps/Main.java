@@ -199,6 +199,7 @@ public final class Main {
         String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
         this.conn=DriverManager.getConnection(urlToDB);
       } catch(Exception e) {
+        e.printStackTrace();
         System.out.println("ERROR: could not connect to maps database");
       }
     }
@@ -218,7 +219,6 @@ public final class Main {
         //= Arrays.asList(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9));
         for(int i=1; i<=rs.getMetaData().getColumnCount(); i++) {
           fields[i-1] = (rs.getString(i));
-          System.out.println(rs.getString(i));
         }
        userInfoList.add(fields);
 
@@ -250,6 +250,7 @@ public final class Main {
         String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
         this.conn=DriverManager.getConnection(urlToDB);
       } catch(Exception e) {
+        e.printStackTrace();
         System.out.println("ERROR: could not connect to maps database");
       }
 

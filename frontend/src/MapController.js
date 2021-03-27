@@ -65,7 +65,7 @@ function MapController() {
 
   return (
    
-      <div style={{display: "flex",flexDirection:"row", textAlign: "center"}}>
+      <div style={{display: "flex",flexDirection:"row", textAlign: "center", zIndex: 20}}>
 
         <Map corners={{ nw, se }} onZoom={onZoom} canvasRef={canvasRef} />
 

@@ -71,7 +71,7 @@ public final class CheckinThread extends Thread {
               SQLQueries.insertCheckin(conn, id, name, timestamp, lat, lon);
               conn.close();
             } catch(Exception e) {
-              System.out.println("ERROR: could not connect to maps database");
+
             }
 
           }

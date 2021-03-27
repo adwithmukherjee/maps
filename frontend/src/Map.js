@@ -299,7 +299,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
     return (
         <>
             <Route title="Maps!" pointOne={pointOne} pointTwo={pointTwo} setPointOne={setPointOne} setPointTwo={setPointTwo} setActiveRoute={setActiveRoute} />
-            <canvas ref={canvasRef} />
+            <canvas ref={canvasRef} style={{zIndex: 20}}/>
         </>
     )
 }
