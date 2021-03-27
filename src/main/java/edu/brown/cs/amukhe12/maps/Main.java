@@ -4,6 +4,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -183,11 +184,60 @@ public final class Main {
     Spark.post("/nearest",new NearestHandler());
     Spark.post("/intersection", new IntersectionHandler());
     Spark.post("/checkin", new CheckinHandler());
+    Spark.post("/userCheckins", new UserCheckinHandler());
 
 
   }
 
-  ///////CHECKIN SERVER//////
+  private class UserCheckinHandler implements Route {
+
+    private Connection conn = null;
+
+    public UserCheckinHandler(){
+      try {
+        Class.forName("org.sqlite.JDBC");
+        String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
+        this.conn=DriverManager.getConnection(urlToDB);
+      } catch(Exception e) {
+        System.out.println("ERROR: could not connect to maps database");
+      }
+    }
+
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject body = new JSONObject((request.body()));
+      int id = body.getInt("id");
+      System.out.println(id);
+
+      PreparedStatement prep = SQLQueries.userCheckin(conn,id);
+      ResultSet rs = prep.executeQuery();
+
+      List<String[]> userInfoList = new ArrayList<>();
+      while (rs.next()) {
+        String[] fields = new String[5];
+        //= Arrays.asList(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9));
+        for(int i=1; i<=rs.getMetaData().getColumnCount(); i++) {
+          fields[i-1] = (rs.getString(i));
+          System.out.println(rs.getString(i));
+        }
+       userInfoList.add(fields);
+
+      }
+      rs.close();
+      prep.close();
+
+      String[][] userInfo = new String[userInfoList.size()][5];
+
+      for(int i=0;i<userInfoList.size();i++){
+        userInfo[i] = userInfoList.get(i);
+      }
+
+      Map variables = ImmutableMap.of("user",userInfo);
+      return GSON.toJson(variables);
+    }
+  }
+
+  ///////CHECKIN SERVER/////
 
   private class CheckinHandler implements Route {
 
