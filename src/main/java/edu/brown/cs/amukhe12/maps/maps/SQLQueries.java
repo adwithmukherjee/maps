@@ -126,4 +126,10 @@ public class SQLQueries {
     prep.setDouble(5, latitude);
     prep.executeUpdate();
   }
+
+  public static PreparedStatement userCheckin(Connection conn, int id) throws SQLException {
+    PreparedStatement prep = conn.prepareStatement("SELECT * FROM checkins WHERE id = ?");
+    prep.setInt(1,id);
+    return prep;
+  }
 }
