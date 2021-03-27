@@ -250,7 +250,6 @@ public final class Main {
         String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
         this.conn=DriverManager.getConnection(urlToDB);
       } catch(Exception e) {
-        e.printStackTrace();
         System.out.println("ERROR: could not connect to maps database");
       }
 
