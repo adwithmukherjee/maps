@@ -273,7 +273,7 @@ public final class Main {
       for (Double timestamp: users.keySet()){
         UserCheckin user = users.get(timestamp);
         userInfo[i] = new String[]{timestamp.toString(), ""+user.getId(), user.getName(), ""+user.getLat(), ""+user.getLon()};
-        System.out.println(""+user.getId() + user.getName() + timestamp);
+//        System.out.println(""+user.getId() + user.getName() + timestamp);
         i++;
       }
 

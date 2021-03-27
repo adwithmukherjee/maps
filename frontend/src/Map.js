@@ -155,14 +155,17 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
                 } else {
                     if (pointOne && pointTwo) {
-                        setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-                        setPointTwo(null)
                         setActiveRoute([])
+                        setPointTwo(null)
+                        setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
 
-                    } else if (pointOne) {
+                    } else if (pointOne && !pointTwo) {
                         //WHERE ROUTE CALL GOES 
                         setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-
+                    }
+                    else if (!pointOne && pointTwo) {
+                        //WHERE ROUTE CALL GOES
+                        setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
                     }
                 }
             }
@@ -170,9 +173,9 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         }
 
     }
-
+    
     useEffect(() => {
-        if (pointTwo) {
+        if (pointTwo && pointOne) {
 
             axios.post(
                 "http://localhost:4567/croute",
@@ -200,7 +203,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         }
 
 
-    }, [pointTwo])
+    }, [pointTwo,pointOne])
 
     useEffect(() => {
 
@@ -246,7 +249,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
 
         //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         context.beginPath()
-        context.lineWidth = 4
+        context.lineWidth = 3
         activeWays.map((way) => {
             const wayObj = {
                 start: { latitude: way[0], longitude: way[1] },
@@ -265,6 +268,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         if (pointOne) {
             const n1 = getPointFromCoords(pointOne.coords)
             context.beginPath()
+            context.strokeStyle = "blue"
             context.arc(n1.x, n1.y, 10, 0, Math.PI * 2, true)
             context.stroke()
         }
@@ -272,6 +276,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         if (pointTwo) {
             const n2 = getPointFromCoords(pointTwo.coords)
             context.beginPath()
+            context.strokeStyle = "red"
             context.arc(n2.x, n2.y, 10, 0, Math.PI * 2, true)
             context.stroke()
         }
@@ -279,6 +284,7 @@ const Map = ({ corners, canvasRef, onZoom }) => {
         if (activeRoute.length != 0) {
             //DRAW ROUTE
             context.beginPath()
+            context.strokeStyle = "black"
             activeRoute.forEach((way) => {
                 drawWay(context, way);
             })

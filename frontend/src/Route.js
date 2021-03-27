@@ -17,51 +17,67 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
 
     const startSt = useRef(null)
     const startCr = useRef(null)
+    const endSt = useRef(null)
+    const endCr = useRef(null)
 
     const handleSubmit = () => {
 
 
-        if (startLat && endLat) {
-            const lat1 = parseFloat(startLat.current.value)
-            const long1 = parseFloat(startLong.current.value)
-            const lat2 = parseFloat(endLat.current.value)
-            const long2 = parseFloat(endLong.current.value)
-
-            const onPointOneEntered = (res) => {
-                // const { coords, id } = res.data
-                // setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-            }
-            const onPointTwoEntered = (res) => {
-                const { coords, id } = res.data
-                setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-            }
-            if (lat1 && long1 && lat2 && long2) {
-
-                nearest(lat1, long1, onPointOneEntered)
-                nearest(lat2, long2, onPointTwoEntered)
-            }
-        }
+        // if (startLat && endLat) {
+        //     const lat1 = parseFloat(startLat.current.value)
+        //     const long1 = parseFloat(startLong.current.value)
+        //     const lat2 = parseFloat(endLat.current.value)
+        //     const long2 = parseFloat(endLong.current.value)
+        //
+        //     const onPointOneEntered = (res) => {
+        //         // const { coords, id } = res.data
+        //         // setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
+        //     }
+        //     const onPointTwoEntered = (res) => {
+        //         // const { coords, id } = res.data
+        //         // setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
+        //     }
+        //     if (lat1 && long1 && lat2 && long2) {
+        //
+        //         nearest(lat1, long1, onPointOneEntered)
+        //         nearest(lat2, long2, onPointTwoEntered)
+        //     }
+        // }
 
         if (startSt && startCr) {
-            const street = startSt.current.value
-            const cross = startCr.current.value
+            const street1 = startSt.current.value
+            const cross1 = startCr.current.value
 
             const onPointOneIntEntered = (res) => {
-                const { coords, id } = res.data
-                setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
+                const {coords, id} = res.data
+                setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id})
             }
 
-            if (startSt && startCr) {
-                intersection(street, cross, onPointOneIntEntered)
-            }
+            intersection(street1, cross1, onPointOneIntEntered)
+            // ONLY Redraws route on the setting of point 2
         }
 
+        if (endSt && endCr) {
+            const street2 = endSt.current.value
+            const cross2 = endCr.current.value
+
+            const onPointTwoIntEntered = (res) => {
+                const {coords, id} = res.data
+                setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id})
+            }
+
+            intersection(street2, cross2, onPointTwoIntEntered)
+        }
     }
 
     const handleClearRoute = () => {
         setActiveRoute([])
         setPointOne(null)
         setPointTwo(null)
+        startSt.current.value = ""
+        startCr.current.value = ""
+        endSt.current.value = ""
+        endCr.current.value = ""
     }
 
     useEffect(() => {
@@ -85,13 +101,15 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
             <div>
                 <h1> {title} </h1>
 
-                <TextBox inputRef={startLat} label="Start Latitude" value={pointOne ? pointOne.coords.latitude : ""} />
-                <TextBox label="Start Longitude" value={pointOne ? pointOne.coords.longitude : ""} inputRef={startLong} />
-                <TextBox label="End Latitude" value={pointTwo ? pointTwo.coords.latitude : ""} inputRef={endLat} />
-                <TextBox label="End Longitude" value={pointTwo ? pointTwo.coords.longitude : ""} inputRef={endLong} />
+                {/*<TextBox inputRef={startLat} label="Start Latitude" value={pointOne ? pointOne.coords.latitude : ""} />*/}
+                {/*<TextBox label="Start Longitude" value={pointOne ? pointOne.coords.longitude : ""} inputRef={startLong} />*/}
+                {/*<TextBox label="End Latitude" value={pointTwo ? pointTwo.coords.latitude : ""} inputRef={endLat} />*/}
+                {/*<TextBox label="End Longitude" value={pointTwo ? pointTwo.coords.longitude : ""} inputRef={endLong} />*/}
 
                 <TextBox inputRef={startSt} label="Start Street" value={pointOne ? pointOne.startStreet : ""} />
-                <TextBox inputRef={startCr} label="Start Cross" value={pointOne ? pointOne.startCross : ""} />
+                <TextBox inputRef={startCr} label="Start Cross-Sreet" value={pointOne ? pointOne.startCross : ""} />
+                <TextBox inputRef={endSt} label="End Street" value={pointTwo ? pointTwo.endStreet : ""} />
+                <TextBox inputRef={endCr} label="End Cross-Street" value={pointTwo ? pointTwo.endCross : ""} />
 
                 {/*"Coordinates: (" + coords.srclat +","+ coords.srclong +") -> ("+ coords.destlat +","+ coords.destlong+")"*/}
 
