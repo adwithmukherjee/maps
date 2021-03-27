@@ -406,8 +406,13 @@ public final class Main {
 //      List<String> node1Ids = new SQLParser( db.getFilename(), null)
 //                .parseAndReturnList(SQLQueries.streetIntersect(str11, str12)).get(0);
 
-      List<String> intersection = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross)).get(0);
 
+      
+      List<List<String>> intersectionResults = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross));
+      if (intersectionResults == null) {
+        return null;
+      }
+      List<String> intersection = intersectionResults.get(0);
 
       String node1Id = "";
       for (int i = 0; i < 2; i++) {
