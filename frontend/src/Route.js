@@ -3,8 +3,6 @@ import TextBox from "./TextBox"
 import { AwesomeButton } from "react-awesome-button"
 import nearest from "./axios/nearest"
 import intersection from "./axios/intersection"
-import MapController from "./MapController"
-import Map from "./Map"
 
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss"
 

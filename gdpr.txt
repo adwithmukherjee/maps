@@ -1,0 +1,14 @@
+GDPR requires that you specify exactly what you intend to do with each data point. Consider each data point that you’re gathering from your users (Name, location, timestamp). Writing to a user, justify why each data point is needed in an imaginary final version of your application: what eventual functionality might use the data?
+
+	Let’s imagine a final version of this project that helps users meet up with their friends or to navigate to a desired location. Their name, location and timestamp would all be needed for functionality.
+
+To the user:
+	The name you provide will be used to identify yourself on the map for yourself and your friends as well as distinguish yourself from other users. Your location is needed to locate the nearest traversable node to you, to show you your current location on a map and to check your progress along a route to help you navigate. Similarly, your timestamp is needed with the location to track your progress along a route or to give an estimated time of arrival to a friend. 
+
+
+Consider a more complex application that you’ve interacted with before (Facebook, Steam, MyAnimeList) - why might it be difficult to delete all of the data on a user? Consider factors unique to the application you've chosen; specifically those other than volume or size of data.
+
+	With an application like Facebook, it may be difficult to delete all of the data connecting to a user for a few reasons. Facebook was designed for users to interact with each other. That means a lot of your data on Facebook is connected to other users. 
+	This data includes posts you’ve made, others you’ve reacted to, your collection of friends and comments you’ve made on other users’ posts. To delete all data on a user you would most likely change or have to modify other users’ content. 
+	For example, other users on Facebook may also have mentioned or tagged a user in their own content deleting this users account would possibly change the comment or would need a modification. Another example where it may be difficult to delete all of the data on a user is that other people may have reposted or referenced a specific photo or post. If you delete the user’s post you would also be changing the reposts which are related to other users. 
+
