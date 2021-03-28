@@ -6,7 +6,7 @@ import intersection from "./axios/intersection"
 
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss"
 
-const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRoute }) => {
+const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveRoute, setError }) => {
 
     const [route, setRoute] = useState([])
 
@@ -44,6 +44,10 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
         //     }
         // }
 
+        const error = () => {
+            setError("Error: Could not retrieve intersection from server")
+        }
+
         if (startSt && startCr) {
             const street1 = startSt.current.value
             const cross1 = startCr.current.value
@@ -53,7 +57,8 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
                     setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id})
                 }
 
-                intersection(street1, cross1, onPointOneIntEntered)
+             
+                intersection(street1, cross1, onPointOneIntEntered, error)
                 // ONLY Redraws route on the setting of point 2
             }
         }
@@ -68,7 +73,7 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
                     setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id})
                 }
 
-                intersection(street2, cross2, onPointTwoIntEntered)
+                intersection(street2, cross2, onPointTwoIntEntered, error)
             }
         }
     }

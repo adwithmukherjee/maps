@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export default function (street, cross, callback) {
+export default function (street, cross, callback, error) {
     axios.post(
         "http://localhost:4567/intersection",
         {
@@ -14,10 +14,13 @@ export default function (street, cross, callback) {
             }
         }
     ).then((res) => {
-
-        callback(res)
-
+        if(!res.data){
+            error()
+        } else {
+            callback(res)
+        }
+        
     }).catch((err) => {
-
+        error()
     })
 }

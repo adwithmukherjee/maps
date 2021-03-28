@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export default function (lat, long, callback) {
+export default function (lat, long, callback, error) {
     axios.post(
         "http://localhost:4567/nearest",
         {
@@ -18,6 +18,6 @@ export default function (lat, long, callback) {
         callback(res)
 
     }).catch((err) => {
-
+        error()
     })
 }

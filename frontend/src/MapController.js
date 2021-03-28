@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react"
 import './App.css';
 import Map from "./Map"
 
-function MapController() {
+function MapController({setError}) {
 
   const [nw, setNW] = useState({ latitude: 41.82686216366997, longitude: -71.40645750837325 })
   const [se, setSE] = useState({ latitude: 41.82355259953458, longitude: -71.4000750453612 })
@@ -67,7 +67,7 @@ function MapController() {
 
     <div style={{ display: "flex", flexDirection: "row", textAlign: "center", zIndex: 20 }}>
 
-      <Map corners={{ nw, se }} onZoom={onZoom} canvasRef={canvasRef} />
+      <Map corners={{ nw, se }} onZoom={onZoom} canvasRef={canvasRef} setError={setError}/>
 
     </div>
 
