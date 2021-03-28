@@ -52,10 +52,6 @@ const Map = ({ corners, canvasRef, onZoom, setError }) => {
     const tileNW = getTileFromCoords(nw.latitude, nw.longitude);
     const tileSE = getTileFromCoords(se.latitude, se.longitude);
 
-    // console.log(tileNW)
-    // console.log(tileSE)
-    //  console.log("start")
-
     let currentTile = {
       latitude: tileNW.latitude + TILE_HEIGHT,
       longitude: tileNW.longitude - TILE_WIDTH,
@@ -75,9 +71,6 @@ const Map = ({ corners, canvasRef, onZoom, setError }) => {
       currentTile.longitude = tileNW.longitude - TILE_WIDTH;
       currentTile.latitude = currentTile.latitude - TILE_HEIGHT;
     }
-
-    // console.log("active tiles set")
-    //console.log(activeTiles)
 
     return activeTiles;
   };
@@ -133,7 +126,6 @@ const Map = ({ corners, canvasRef, onZoom, setError }) => {
         }
       )
       .then((res) => {
-        //console.log("Requesting tiles: " + tile)
         const ways = res.data.ways;
         const tileId = JSON.stringify(tile);
         localStorage.setItem(tileId, JSON.stringify(ways));
@@ -269,7 +261,6 @@ const Map = ({ corners, canvasRef, onZoom, setError }) => {
 
     context.strokeStyle = "#FFFFFF";
 
-    //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     context.beginPath();
     context.lineWidth = 3;
     activeWays.map((way) => {

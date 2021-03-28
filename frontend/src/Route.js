@@ -22,28 +22,6 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
 
     const handleSubmit = () => {
 
-
-        // if (startLat && endLat) {
-        //     const lat1 = parseFloat(startLat.current.value)
-        //     const long1 = parseFloat(startLong.current.value)
-        //     const lat2 = parseFloat(endLat.current.value)
-        //     const long2 = parseFloat(endLong.current.value)
-        //
-        //     const onPointOneEntered = (res) => {
-        //         // const { coords, id } = res.data
-        //         // setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-        //     }
-        //     const onPointTwoEntered = (res) => {
-        //         // const { coords, id } = res.data
-        //         // setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-        //     }
-        //     if (lat1 && long1 && lat2 && long2) {
-        //
-        //         nearest(lat1, long1, onPointOneEntered)
-        //         nearest(lat2, long2, onPointTwoEntered)
-        //     }
-        // }
-
         const error = () => {
             setError("Error: Could not retrieve intersection from server")
         }
@@ -59,7 +37,6 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
 
              
                 intersection(street1, cross1, onPointOneIntEntered, error)
-                // ONLY Redraws route on the setting of point 2
             }
         }
 
@@ -92,8 +69,6 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
 
         localStorage.clear()
         handleClearRoute()
-        //  setNW({ latitude: 41.82686216366997, longitude: -71.40645750837325 })
-        // setSE({ latitude: 41.82355259953458, longitude: -71.4000750453612 })
     }
 
 
@@ -118,22 +93,16 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
             <div>
                 <h1> {title} </h1>
 
-                {/*<TextBox inputRef={startLat} label="Start Latitude" value={pointOne ? pointOne.coords.latitude : ""} />*/}
-                {/*<TextBox label="Start Longitude" value={pointOne ? pointOne.coords.longitude : ""} inputRef={startLong} />*/}
-                {/*<TextBox label="End Latitude" value={pointTwo ? pointTwo.coords.latitude : ""} inputRef={endLat} />*/}
-                {/*<TextBox label="End Longitude" value={pointTwo ? pointTwo.coords.longitude : ""} inputRef={endLong} />*/}
-
                 <TextBox inputRef={startSt} label="Start Street" value={pointOne ? pointOne.startStreet : ""} />
                 <TextBox inputRef={startCr} label="Start Cross-Sreet" value={pointOne ? pointOne.startCross : ""} />
                 <TextBox inputRef={endSt} label="End Street" value={pointTwo ? pointTwo.endStreet : ""} />
                 <TextBox inputRef={endCr} label="End Cross-Street" value={pointTwo ? pointTwo.endCross : ""} />
 
-                {/*"Coordinates: (" + coords.srclat +","+ coords.srclong +") -> ("+ coords.destlat +","+ coords.destlong+")"*/}
+                {}
 
             </div>
             <div>
                 <AwesomeButton
-                    //cssModule={AwesomeButtonStyles}
                     type="primary"
                     onPress={handleSubmit}
                 >
@@ -143,7 +112,6 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
 
             <div>
                 <AwesomeButton
-                    //cssModule={AwesomeButtonStyles}
                     type="primary"
                     onPress={handleClearRoute}
                 >
@@ -153,7 +121,6 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
 
             <div>
                 <AwesomeButton
-                    //cssModule={AwesomeButtonStyles}
                     type="primary"
                     onPress={handleResetMap}
                 >

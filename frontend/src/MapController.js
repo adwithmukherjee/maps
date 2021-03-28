@@ -17,7 +17,6 @@ function MapController({setError}) {
 
   const onMouseDown = useCallback(e => {
     if (canvasRef.current && canvasRef.current.contains(e.target)) {
-      //console.log("go")
       isDragging.current = true
       dragStartX.current = e.pageX
       dragStartY.current = e.pageY
@@ -26,7 +25,6 @@ function MapController({setError}) {
 
   const onMouseUp = useCallback(e => {
     if (isDragging.current) {
-      //console.log("end")
       isDragging.current = false;
 
       setNW(nw => {
