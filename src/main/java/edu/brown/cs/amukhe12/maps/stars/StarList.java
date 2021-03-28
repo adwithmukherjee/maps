@@ -7,7 +7,6 @@ import edu.brown.cs.amukhe12.maps.kdtree.KDTree;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -18,37 +17,37 @@ import java.util.Random;
  */
 public class StarList implements EntryList {
 
-  private List<Star> _stars;
+  private List<Star> stars;
 
-  private KDTree<Star> _starTree;
+  private KDTree<Star> starTree;
 
   public StarList() {
-    _stars = new ArrayList<>();
-    _starTree = new KDTree<>(3);
+    stars = new ArrayList<>();
+    starTree = new KDTree<>(3);
   }
 
   public List<Star> getList() {
-    return _stars;
+    return stars;
   }
 
   public void clear() {
-    _stars.clear();
-    _starTree = new KDTree<>(3);
+    stars.clear();
+    starTree = new KDTree<>(3);
   }
 
 
   public int size() {
-    return _stars.size();
+    return stars.size();
   }
 
 
   public boolean isEmpty() {
-    return _stars.isEmpty();
+    return stars.isEmpty();
   }
 
   /**
-   * Creates a new star and adds it to the KDTree and List with the provided fields,
-   * Throws an exception if there is a type mismatch
+   * Creates a new star and adds it to the KDTree and List with the provided fields.
+   * Throws an exception if there is a type mismatch.
    *
    * @param fields
    * @throws Exception
@@ -56,28 +55,28 @@ public class StarList implements EntryList {
   public void addEntry(List<String> fields) throws Exception {
     Star entry = new Star();
     entry.setFields(fields);
-    _stars.add(entry);
+    stars.add(entry);
 
     KDNode<Star> node =
         new KDNode<Star>(Arrays.asList(entry.getX(), entry.getY(), entry.getZ()), entry);
-    _starTree.insert(node);
+    starTree.insert(node);
   }
 
   /**
-   * Returns the instance's associated KDTree
+   * Returns the instance's associated KDTree.
    *
    * @return KDTree instance variable
    */
   public KDTree<Star> getTree() {
-    return _starTree;
+    return starTree;
   }
 
   /**
-   * Uses a KD-Tree to calculate and return a List of Stars less than radius away from starName
+   * Uses a KD-Tree to calculate and return a List of Stars less than radius away from starName.
    *
    * @param radius
    * @param starName
-   * @return
+   * @return a List of Stars less than radius away from starName.
    * @throws Exception
    */
   public List<Star> radiusName(double radius, String starName) throws Exception {
@@ -102,13 +101,13 @@ public class StarList implements EntryList {
   }
 
   /**
-   * Uses a KDTree to calculate and return a List of Stars less than radius away from (x1,y1,z1)
+   * Uses a KDTree to calculate and return a List of Stars less than radius away from (x1,y1,z1).
    *
    * @param radius
    * @param x1
    * @param y1
    * @param z1
-   * @return
+   * @return  a List of Stars less than radius away from (x1,y1,z1).
    * @throws Exception
    */
   public List<Star> radiusCoords(double radius, double x1, double y1, double z1) throws Exception {
@@ -117,7 +116,7 @@ public class StarList implements EntryList {
       throw new Exception("enter non-negative radius");
     }
     List<Double> coords = Arrays.asList(x1, y1, z1);
-    List<KDNode<Star>> nodes = _starTree.radius(radius, coords);
+    List<KDNode<Star>> nodes = starTree.radius(radius, coords);
     List<Star> neighbors = new ArrayList<>();
     for (KDNode<Star> node : nodes) {
       neighbors.add(node.getValue());
@@ -127,13 +126,13 @@ public class StarList implements EntryList {
   }
 
   /**
-   * Uses a KDTree to find the num closes neighbors to the point (x1,y1,z1)
+   * Uses a KDTree to find the num closest neighbors to the point (x1,y1,z1).
    *
    * @param num
    * @param x1
    * @param y1
    * @param z1
-   * @return
+   * @return  the num closest neighbors to the point (x1,y1,z1).
    * @throws Exception
    */
   public List<Star> neighborsSearchCoords(int num, double x1, double y1, double z1)
@@ -143,7 +142,7 @@ public class StarList implements EntryList {
       throw new Exception("enter non-negative number of neighbors");
     }
     List<Double> coords = Arrays.asList(x1, y1, z1);
-    List<KDNode<Star>> nodes = _starTree.nearestNeighbors(num, coords);
+    List<KDNode<Star>> nodes = starTree.nearestNeighbors(num, coords);
     List<Star> neighbors = new ArrayList<>();
     for (KDNode<Star> node : nodes) {
       neighbors.add(node.getValue());
@@ -152,11 +151,11 @@ public class StarList implements EntryList {
   }
 
   /**
-   * Uses a KDTree to find the num closes neighbors to the star with proper name starName
+   * Uses a KDTree to find the num closest neighbors to the star with proper name starName.
    *
    * @param num
    * @param starName
-   * @return
+   * @return the num closest neighbors to the star with proper name starName.
    * @throws Exception
    */
   public List<Star> neighborsSearchName(int num, String starName) throws Exception {
@@ -177,8 +176,8 @@ public class StarList implements EntryList {
 
     this.sortRelativeTo(x1, y1, z1);
 
-    if (num + 1 > _stars.size()) {
-      num = _stars.size() - 1;
+    if (num + 1 > stars.size()) {
+      num = stars.size() - 1;
     }
 
     List<Star> neighbors = this.neighborsSearchCoords(num + 1, x1, y1, z1);
@@ -187,7 +186,7 @@ public class StarList implements EntryList {
   }
 
   /**
-   * Uses a naive List search approach to return a List of the num closes Stars to the coords (x1,y1,z1)
+   * Uses a naive List search to return a List of the num closes Stars to the coords (x1,y1,z1).
    *
    * @param num
    * @param x1
@@ -203,8 +202,8 @@ public class StarList implements EntryList {
       throw new Exception("enter non-negative number of neighbors");
     }
 
-    if (num > _stars.size()) {
-      num = _stars.size();
+    if (num > stars.size()) {
+      num = stars.size();
     }
 
     this.sortRelativeTo(x1, y1, z1);
@@ -212,10 +211,10 @@ public class StarList implements EntryList {
     StarComparator comparator = new StarComparator(x1, y1, z1);
     List<Integer> starsOfSameDist = new ArrayList<>();
 
-    Star lastStar = _stars.get(num - 1);
+    Star lastStar = stars.get(num - 1);
 
-    for (int i = 0; i < _stars.size(); i++) {
-      Star star = _stars.get(i);
+    for (int i = 0; i < stars.size(); i++) {
+      Star star = stars.get(i);
       if (comparator.compare(lastStar, star) == 0) {
         starsOfSameDist.add(i);
       }
@@ -223,13 +222,14 @@ public class StarList implements EntryList {
     for (int i : starsOfSameDist) {
       int randomIndex = new Random()
           .nextInt(starsOfSameDist.size());
-      Collections.swap(_stars, i, starsOfSameDist.get(randomIndex));
+      Collections.swap(stars, i, starsOfSameDist.get(randomIndex));
     }
-    return _stars.subList(0, num);
+    return stars.subList(0, num);
   }
 
   /**
-   * uses a naive search approach to find and return a List of the num closes stars to the Star with proper name starName
+   * uses a naive search approach to find and return a List of the num closest stars to the Star.
+   * with proper name starName.
    *
    * @param num
    * @param starName
@@ -255,8 +255,8 @@ public class StarList implements EntryList {
     }
     this.sortRelativeTo(x1, y1, z1);
 
-    if (num + 1 > _stars.size()) {
-      num = _stars.size() - 1;
+    if (num + 1 > stars.size()) {
+      num = stars.size() - 1;
     }
 
     List<Star> neighbors = this.naiveNeighborsSearchCoords(num + 1, x1, y1, z1);
@@ -265,13 +265,13 @@ public class StarList implements EntryList {
   }
 
   /**
-   * Uses a naive search approach to return a List of all Stars less than radius away from (x,y,z)
+   * Uses a naive search approach to return a List of all Stars less than radius away from (x,y,z).
    *
    * @param radius
    * @param x
    * @param y
    * @param z
-   * @return
+   * @return a List of all Stars less than radius away from (x,y,z).
    * @throws Exception
    */
   public List<Star> naiveRadiusCoords(double radius, double x, double y, double z)
@@ -283,13 +283,13 @@ public class StarList implements EntryList {
     this.sortRelativeTo(x, y, z);
     List<Star> neighbors = new ArrayList<>();
     int i = 0;
-    Star star = _stars.get(0);
+    Star star = stars.get(0);
     while (this.distanceBetween(x, y, z, star.getX(), star.getY(), star.getZ()) <= radius
-        && i < _stars.size()) {
+        && i < stars.size()) {
       neighbors.add(star);
       i++;
-      if (i < _stars.size()) {
-        star = _stars.get(i);
+      if (i < stars.size()) {
+        star = stars.get(i);
       }
     }
     return neighbors;
@@ -298,7 +298,7 @@ public class StarList implements EntryList {
   }
 
   /**
-   * Searches a KDTree and returns a List of all Stars less than radius away from (x,y,z)
+   * Searches a KDTree and returns a List of all Stars less than radius away from (x,y,z).
    *
    * @param radius
    * @param starName
@@ -338,7 +338,7 @@ public class StarList implements EntryList {
     double x1 = 0;
     double y1 = 0;
     double z1 = 0;
-    for (Star star : _stars) {
+    for (Star star : stars) {
       if (star.getProperName() != null && star.getProperName().equals(starName)) {
         x1 = star.getX();
         y1 = star.getY();
@@ -354,7 +354,7 @@ public class StarList implements EntryList {
   }
 
   /**
-   * uses distance formula to find distance between two points in 3-space
+   * uses distance formula to find distance between two points in 3-space.
    *
    * @param x1
    * @param y1
@@ -376,7 +376,7 @@ public class StarList implements EntryList {
    * @param zOrigin
    */
   private void sortRelativeTo(double xOrigin, double yOrigin, double zOrigin) {
-    Collections.sort(_stars, new StarComparator(xOrigin, yOrigin, zOrigin));
+    Collections.sort(stars, new StarComparator(xOrigin, yOrigin, zOrigin));
   }
 
 }

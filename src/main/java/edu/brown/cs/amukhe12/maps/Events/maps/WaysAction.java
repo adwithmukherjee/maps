@@ -8,19 +8,26 @@ import edu.brown.cs.amukhe12.maps.sqlparser.SQLParser;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * WaysAction.
+ */
 public class WaysAction implements IEvent {
 
-  private String _id;
-  private DBReference _db;
+  private String id;
+  private DBReference db;
 
-  public WaysAction(DBReference db) {
-    _id = "ways";
-    _db = db;
+  /**
+   * Constructor.
+   * @param database db.
+   */
+  public WaysAction(DBReference database) {
+    id = "ways";
+    db = database;
   }
 
   @Override
   public void execute(List<String> args) throws Exception {
-    if (!_db.isInitialized()) {
+    if (!db.isInitialized()) {
       throw new Exception("ERROR: no db set");
     }
 
@@ -28,12 +35,12 @@ public class WaysAction implements IEvent {
 
       List<String> command = new ArrayList<>();
       command.add("ways");
-      for(String arg: args){
+      for (String arg : args) {
         command.add(arg);
       }
-      List<String> retrieved = _db.retrieve(command);
-      if(retrieved != null){
-        for(String el: retrieved){
+      List<String> retrieved = db.retrieve(command);
+      if (retrieved != null) {
+        for (String el : retrieved) {
           System.out.println(el);
         }
       } else {
@@ -42,7 +49,7 @@ public class WaysAction implements IEvent {
         Double lat2 = Double.parseDouble(args.get(2));
         Double long2 = Double.parseDouble(args.get(3));
         //System.out.println("" + lat1 + ", " + long1 + ", " + lat2 + ", " + long2);
-        List<List<String>> ids = (new SQLParser(_db.getFilename(), null))
+        List<List<String>> ids = (new SQLParser(db.getFilename(), null))
             .parseAndReturnList(SQLQueries.ways(lat1, long1, lat2, long2));
 //      List<Way> ways =
 //          _map.ways(Double.parseDouble(args.get(0)), Double.parseDouble(args.get(1)),
@@ -52,11 +59,11 @@ public class WaysAction implements IEvent {
 //      }
 //      Collections.sort(ids);
         List<String> results = new ArrayList<>();
-        for (List<String> id : ids) {
-          System.out.println(id.get(0));
-          results.add(id.get(0));
+        for (List<String> eachId : ids) {
+          System.out.println(eachId.get(0));
+          results.add(eachId.get(0));
         }
-        _db.cache(command, results);
+        db.cache(command, results);
       }
     } else {
       throw new Exception("ERROR: incorrect number of arguments");
@@ -65,7 +72,7 @@ public class WaysAction implements IEvent {
 
   @Override
   public String id() {
-    return _id;
+    return id;
   }
 }
 

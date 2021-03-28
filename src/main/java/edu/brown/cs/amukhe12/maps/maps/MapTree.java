@@ -9,12 +9,12 @@ import java.util.List;
 
 public class MapTree implements EntryList {
 
-  private KDTree<MapNode> _mapNodes;
-  private MapGraph _mapGraph;
+  private KDTree<MapNode> mapNodes;
+  private MapGraph mapGraph;
 
-  public MapTree(MapGraph mapGraph){
-    _mapGraph = mapGraph;
-    _mapNodes = new KDTree(2);
+  public MapTree(MapGraph graph) {
+    mapGraph = graph;
+    mapNodes = new KDTree(2);
   }
 
   @Override
@@ -22,20 +22,20 @@ public class MapTree implements EntryList {
     String nodeId = fields.get(0);
     MapNode node = new MapNode(nodeId, Double.parseDouble(fields.get(1)),
         Double.parseDouble(fields.get(2)));
-    _mapNodes.insert(new KDNode<>(node.getCoords(), node));
-    _mapGraph.insertNode(node);
+    mapNodes.insert(new KDNode<>(node.getCoords(), node));
+    mapGraph.insertNode(node);
   }
 
   public List<KDNode<MapNode>> nearest(int number, double latitude, double longitude) {
     List<KDNode<MapNode>> nearest =
-        _mapNodes.nearestNeighbors(number, Arrays.asList(latitude, longitude));
+        mapNodes.nearestNeighbors(number, Arrays.asList(latitude, longitude));
     return nearest;
   }
 
 
   @Override
   public void clear() {
-    _mapNodes.clear();
+    mapNodes.clear();
   }
 
   @Override

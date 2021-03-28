@@ -1,6 +1,5 @@
 package edu.brown.cs.amukhe12.maps.maps;
 
-import edu.brown.cs.amukhe12.maps.EntryList;
 import edu.brown.cs.amukhe12.maps.graph.Node;
 
 import java.util.Arrays;
@@ -10,18 +9,18 @@ import java.util.List;
 
 public class MapNode implements Node<MapNode, Way> {
 
-  private Collection<Way> _outEdges;
-  private Collection<Way> _inEdges;
-  private String _id;
-  private double _latitude;
-  private double _longitude;
+  private Collection<Way> outEdges;
+  private Collection<Way> inEdges;
+  private String id;
+  private double latitude;
+  private double longitude;
 
-  public MapNode(String id, Double latitude, Double longitude) {
-    _outEdges = new HashSet<>();
-    _inEdges = new HashSet<>();
-    _id = id;
-    _latitude = latitude;
-    _longitude = longitude;
+  public MapNode(String nodeId, Double lat, Double lon) {
+    outEdges = new HashSet<>();
+    inEdges = new HashSet<>();
+    id = nodeId;
+    latitude = lat;
+    longitude = lon;
   }
 
 
@@ -36,7 +35,7 @@ public class MapNode implements Node<MapNode, Way> {
     double euclidean = Math.sqrt(Math.pow(this.getCoords().get(0) - v.getCoords().get(0), 2)
         + Math.pow(this.getCoords().get(1) - v.getCoords().get(1), 2));
     ////HAVERSINE/////
-    double r = 6371; //meters
+    final double r = 6371; //meters
 
     double dLat = Math.toRadians(this.getCoords().get(0) - v.getCoords().get(0));
     double dLong = Math.toRadians(this.getCoords().get(1) - v.getCoords().get(1));
@@ -51,37 +50,37 @@ public class MapNode implements Node<MapNode, Way> {
   }
 
   public List<Double> getCoords() {
-    return Arrays.asList(_latitude, _longitude);
+    return Arrays.asList(latitude, longitude);
   }
 
   @Override
   public void clearEdges() {
-    _outEdges = new HashSet<>();
+    outEdges = new HashSet<>();
   }
 
   @Override
   public Collection<Way> getOutEdges() {
-    return _outEdges;
+    return outEdges;
   }
 
   @Override
   public Collection<Way> getInEdges() {
-    return _inEdges;
+    return inEdges;
   }
 
   @Override
   public void addOutEdge(Way way) {
-    _outEdges.add(way);
+    outEdges.add(way);
   }
 
   @Override
   public void addInEdge(Way way) {
-    _inEdges.add(way);
+    inEdges.add(way);
   }
 
   @Override
   public String getId() {
-    return _id;
+    return id;
   }
 
 }

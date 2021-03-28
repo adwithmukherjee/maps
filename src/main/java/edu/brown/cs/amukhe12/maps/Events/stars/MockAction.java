@@ -8,25 +8,29 @@ import edu.brown.cs.amukhe12.maps.stars.PersonList;
 import java.util.List;
 
 /**
- * REPLAction that loads in MockPerson data to a givne PersonList via a .csv argument
+ * REPLAction that loads in MockPerson data to a givne PersonList via a .csv argument.
  */
 public class MockAction implements IEvent {
-  private EntryList _people;
-  private String _id;
+  private EntryList people;
+  private String id;
 
-  public MockAction(PersonList people) {
-    _people = people;
-    _id = "mock";
+  /**
+   * Constructor.
+   * @param personList pL
+   */
+  public MockAction(PersonList personList) {
+    people = personList;
+    id = "mock";
   }
 
   @Override
   public void execute(List<String> args) throws Exception {
-    CSVParser personParser = new CSVParser(args.get(0), _people);
-    System.out.println("Read " + _people.size() + " people from " + args.get(0));
+    CSVParser personParser = new CSVParser(args.get(0), people);
+    System.out.println("Read " + people.size() + " people from " + args.get(0));
   }
 
   @Override
   public String id() {
-    return _id;
+    return id;
   }
 }

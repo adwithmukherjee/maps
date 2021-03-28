@@ -10,27 +10,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
 public class MapGraph implements EntryList {
 
-  private Graph<MapNode, Way> _graph;
-  private DBReference _db;
+  private Graph<MapNode, Way> graph;
+  private DBReference db;
 
-  public MapGraph(DBReference db) {
-    _db = db;
-    _graph = new Graph<>();
+  public MapGraph(DBReference database) {
+    db = database;
+    graph = new Graph<>();
   }
 
 
   public void clearEdges() {
-    _graph.clearEdges();
+    graph.clearEdges();
   }
 
   public void insertNode(MapNode u) throws Exception {
-    _graph.insertNode(u);
+    graph.insertNode(u);
   }
 
   /**
@@ -48,10 +47,10 @@ public class MapGraph implements EntryList {
     String toId = fields.get(4);
     MapNode from;
     MapNode to;
-    from = _graph.getNodeFromId(fromId);
-    to = _graph.getNodeFromId(toId);
+    from = graph.getNodeFromId(fromId);
+    to = graph.getNodeFromId(toId);
     way.setWeight(from.distanceTo(to));
-    _graph.insertEdge(from, to, way);
+    graph.insertEdge(from, to, way);
 
   }
 
@@ -119,7 +118,7 @@ public class MapGraph implements EntryList {
     HashMap<APQEntry, Way> pointerEdges = new HashMap<>();
     //HashSet<APQEntry> unvisited = new HashSet<>(); //concurrent with pq
 
-    for (MapNode node : _graph.getNodes().values()) {
+    for (MapNode node : graph.getNodes().values()) {
       APQEntry entry;
       if (node == u) {
         entry = new APQEntry(0, node, v);
@@ -143,11 +142,11 @@ public class MapGraph implements EntryList {
       //insertEdge
 
       Collection<Way> outEdges = currentNode.getValue().getOutEdges();
-      for(Way e: outEdges){
+      for (Way e : outEdges) {
         e.setFrom(currentNode.getValue());
 
         APQEntry endNode;
-        if( nodeToEntries.containsKey(e.to())){
+        if (nodeToEntries.containsKey(e.to())) {
           endNode = nodeToEntries.get(e.to());
         } else {
           endNode = new APQEntry(Double.POSITIVE_INFINITY, e.to(), v);
@@ -157,11 +156,11 @@ public class MapGraph implements EntryList {
         //MapNode endNode =
         double newEstimate = currentNode.getKey() + e.weight();
 
-        if(newEstimate < endNode.getKey()){
+        if (newEstimate < endNode.getKey()) {
 
           APQEntry newEntry = new APQEntry(newEstimate, endNode.getValue(), v);
 
-          if(!newEntry.visited()) {
+          if (!newEntry.visited()) {
             pq.remove(endNode);
             pq.add(newEntry);
             nodeToEntries.put(endNode.getValue(), newEntry);
@@ -171,7 +170,7 @@ public class MapGraph implements EntryList {
         }
       }
 
-      if(currentNode.getValue().getId().equals(v.getId())){
+      if (currentNode.getValue().getId().equals(v.getId())) {
         break;
       }
     }
@@ -193,30 +192,32 @@ public class MapGraph implements EntryList {
 
 
   public MapNode getNodeFromId(String id) {
-    return _graph.getNodeFromId(id);
+    return graph.getNodeFromId(id);
   }
 
   public List<Way> routeFromNodeIds(String id1, String id2) throws Exception {
 
-    MapNode u = _graph.getNodeFromId(id1);
-    MapNode v = _graph.getNodeFromId(id2);
-    List<Way> route = aStar(u, v);//_graph.djikstra(u,v);// //could also do _graph.djikstra
+    MapNode u = graph.getNodeFromId(id1);
+    MapNode v = graph.getNodeFromId(id2);
+    List<Way> route = aStar(u, v);
+    //_graph.djikstra(u,v);// //could also do _graph.djikstra
 
     return route;
   }
 
   public Graph<MapNode, Way> getGraph() {
-    return _graph;
+    return graph;
   }
 
   public void addOutEdges(MapNode u) throws Exception {
 
-    List<List<String>> fields = new SQLParser(_db.getFilename(), null).parseAndReturnList(SQLQueries.getOutEdges(u.getId()));
-    for (List<String> wayField: fields){
+    List<List<String>> fields = new SQLParser(db.getFilename(), null)
+        .parseAndReturnList(SQLQueries.getOutEdges(u.getId()));
+    for (List<String> wayField : fields) {
       Way newWay = new Way(wayField.get(0), wayField.get(1), wayField.get(2));
-      MapNode v = _graph.getNodes().get(wayField.get(3));
+      MapNode v = graph.getNodes().get(wayField.get(3));
       newWay.setWeight(u.distanceTo(v));
-      _graph.insertEdge(u, v, newWay);
+      graph.insertEdge(u, v, newWay);
     }
 
   }
@@ -227,16 +228,16 @@ public class MapGraph implements EntryList {
 
   @Override
   public int size() {
-    return _graph.getNodes().size();
+    return graph.getNodes().size();
   }
 
   @Override
   public boolean isEmpty() {
-    return _graph.getNodes().isEmpty();
+    return graph.getNodes().isEmpty();
   }
 
   @Override
   public String toString() {
-    return _graph.toString();
+    return graph.toString();
   }
 }

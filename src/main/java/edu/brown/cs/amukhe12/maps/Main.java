@@ -1,6 +1,10 @@
 package edu.brown.cs.amukhe12.maps;
 
-import java.io.*;
+//import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,10 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import edu.brown.cs.amukhe12.maps.Events.maps.MapAction;
 import edu.brown.cs.amukhe12.maps.Events.maps.NearestMapAction;
 import edu.brown.cs.amukhe12.maps.Events.maps.RouteAction;
@@ -40,9 +43,6 @@ import edu.brown.cs.amukhe12.maps.stars.Star;
 import edu.brown.cs.amukhe12.maps.stars.StarList;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import org.checkerframework.checker.units.qual.C;
-import org.eclipse.jetty.server.Authentication;
-import org.json.JSONException;
 import org.json.JSONObject;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
@@ -162,7 +162,6 @@ public final class Main {
     Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
 
-
     FreeMarkerEngine freeMarker = createEngine();
 
 //    StarList stars = new StarList();
@@ -176,12 +175,12 @@ public final class Main {
 
     //Setup Maps Routes
 
-    DBReference _db = new DBReference();
+   // DBReference _db = new DBReference();
 
     Spark.post("/ways", new WaysHandler());
-    Spark.post("/nacroute",new NameAndCoordRouteHandler());
-    Spark.post("/croute",new CoordsRouteHandler());
-    Spark.post("/nearest",new NearestHandler());
+    Spark.post("/nacroute", new NameAndCoordRouteHandler());
+    Spark.post("/croute", new CoordsRouteHandler());
+    Spark.post("/nearest", new NearestHandler());
     Spark.post("/intersection", new IntersectionHandler());
     Spark.post("/checkin", new CheckinHandler());
     Spark.post("/userCheckins", new UserCheckinHandler());
@@ -193,12 +192,12 @@ public final class Main {
 
     private Connection conn = null;
 
-    public UserCheckinHandler(){
+    UserCheckinHandler() {
       try {
         Class.forName("org.sqlite.JDBC");
         String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
-        this.conn=DriverManager.getConnection(urlToDB);
-      } catch(Exception e) {
+        this.conn = DriverManager.getConnection(urlToDB);
+      } catch (Exception e) {
         e.printStackTrace();
         System.out.println("ERROR: could not connect to maps database");
       }
@@ -208,19 +207,20 @@ public final class Main {
     public Object handle(Request request, Response response) throws Exception {
       JSONObject body = new JSONObject((request.body()));
       int id = body.getInt("id");
-      System.out.println(id);
+      //System.out.println(id);
 
-      PreparedStatement prep = SQLQueries.userCheckin(conn,id);
+      PreparedStatement prep = SQLQueries.userCheckin(conn, id);
       ResultSet rs = prep.executeQuery();
 
       List<String[]> userInfoList = new ArrayList<>();
       while (rs.next()) {
         String[] fields = new String[5];
-        //= Arrays.asList(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9));
-        for(int i=1; i<=rs.getMetaData().getColumnCount(); i++) {
-          fields[i-1] = (rs.getString(i));
+        //= Arrays.asList(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),
+        // rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9));
+        for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+          fields[i - 1] = (rs.getString(i));
         }
-       userInfoList.add(fields);
+        userInfoList.add(fields);
 
       }
       rs.close();
@@ -228,11 +228,11 @@ public final class Main {
 
       String[][] userInfo = new String[userInfoList.size()][5];
 
-      for(int i=0;i<userInfoList.size();i++){
+      for (int i = 0; i < userInfoList.size(); i++) {
         userInfo[i] = userInfoList.get(i);
       }
 
-      Map variables = ImmutableMap.of("user",userInfo);
+      Map variables = ImmutableMap.of("user", userInfo);
       return GSON.toJson(variables);
     }
   }
@@ -243,20 +243,20 @@ public final class Main {
 
     private Connection conn = null;
 
-    public CheckinHandler() {
+    CheckinHandler() {
 
       try {
         Class.forName("org.sqlite.JDBC");
         String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
-        this.conn=DriverManager.getConnection(urlToDB);
-      } catch(Exception e) {
+        this.conn = DriverManager.getConnection(urlToDB);
+      } catch (Exception e) {
         System.out.println("ERROR: could not connect to maps database");
       }
 
       try {
         SQLQueries.dropCheckinsTable(this.conn);
         SQLQueries.createCheckinsTable(this.conn);
-      }catch(Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
         System.out.println("ERROR: could not create checking table");
       }
@@ -270,14 +270,15 @@ public final class Main {
       String[][] userInfo = new String[users.size()][5];
       int i = 0;
 
-      for (Double timestamp: users.keySet()){
+      for (Double timestamp : users.keySet()) {
         UserCheckin user = users.get(timestamp);
-        userInfo[i] = new String[]{timestamp.toString(), ""+user.getId(), user.getName(), ""+user.getLat(), ""+user.getLon()};
+        userInfo[i] = new String[]{timestamp.toString(), "" + user.getId(),
+            user.getName(), "" + user.getLat(), "" + user.getLon()};
 //        System.out.println(""+user.getId() + user.getName() + timestamp);
         i++;
       }
 
-      Map variables = ImmutableMap.of("users",userInfo);
+      Map variables = ImmutableMap.of("users", userInfo);
       return GSON.toJson(variables);
     }
   }
@@ -289,12 +290,13 @@ public final class Main {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-     JSONObject body = new JSONObject((request.body()));
-     String street = body.getString("street");
-     String cross = body.getString("cross");
-     String node2Id = body.getString("node2Id");
-     // NOTE: need to catch if null
-     List<String> intersection = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross)).get(0);
+      JSONObject body = new JSONObject((request.body()));
+      String street = body.getString("street");
+      String cross = body.getString("cross");
+      String node2Id = body.getString("node2Id");
+      // NOTE: need to catch if null
+      List<String> intersection = new SQLParser(db.getFilename(), null)
+          .parseAndReturnList(SQLQueries.streetIntersect(street, cross)).get(0);
 //     System.out.println(intersection);
       String node1Id = "";
       for (int i = 0; i < 2; i++) {
@@ -309,16 +311,16 @@ public final class Main {
 //        throw new Exception("no intersection found");
 //      }
       db.getGraph().clear();
-      List<Way> route = db.getGraph().routeFromNodeIds(node1Id,node2Id);
+      List<Way> route = db.getGraph().routeFromNodeIds(node1Id, node2Id);
       Double[][] results = new Double[route.size()][4];
       int i = 0;
       for (Way way : route) {
-        Double[] val = new Double[] {way.from().getCoords().get(0), way.from().getCoords().get(1),
+        Double[] val = new Double[]{way.from().getCoords().get(0), way.from().getCoords().get(1),
             way.to().getCoords().get(0), way.to().getCoords().get(1)};
         results[i] = val;
         i++;
-      };
-      Map variables = ImmutableMap.of("route",results);
+      }
+      Map variables = ImmutableMap.of("route", results);
       return GSON.toJson(variables);
     }
   }
@@ -331,16 +333,16 @@ public final class Main {
       String node1Id = body.getString("node1Id");
       String node2Id = body.getString("node2Id");
       db.getGraph().clear();
-      List<Way> route = db.getGraph().routeFromNodeIds(node1Id,node2Id);
+      List<Way> route = db.getGraph().routeFromNodeIds(node1Id, node2Id);
       Double[][] results = new Double[route.size()][4];
       int i = 0;
       for (Way way : route) {
-        Double[] val = new Double[] {way.from().getCoords().get(0), way.from().getCoords().get(1),
+        Double[] val = new Double[]{way.from().getCoords().get(0), way.from().getCoords().get(1),
             way.to().getCoords().get(0), way.to().getCoords().get(1)};
         results[i] = val;
         i++;
-      };
-      Map variables = ImmutableMap.of("route",results);
+      }
+      Map variables = ImmutableMap.of("route", results);
       return GSON.toJson(variables);
     }
   }
@@ -354,7 +356,6 @@ public final class Main {
       double nwLong = body.getDouble("nwLong");
       double seLat = body.getDouble("seLat");
       double seLong = body.getDouble("seLong");
-      //TODO: use the global autocorrect instance to get the suggestions
 
       List<List<String>> wayInfo = (new SQLParser(db.getFilename(), null))
           .parseAndReturnList(SQLQueries.waysSelectAll(nwLat, nwLong, seLat, seLong));
@@ -362,15 +363,11 @@ public final class Main {
       double[][] ways = new double[wayInfo.size()][4];
       int i = 0;
       for (List<String> way : wayInfo) {
-        ways[i] = new double[] {Double.parseDouble(way.get(1)), Double.parseDouble(way.get(2)),
+        ways[i] = new double[]{Double.parseDouble(way.get(1)), Double.parseDouble(way.get(2)),
             Double.parseDouble(way.get(3)), Double.parseDouble(way.get(4))};
         i++;
       }
-      //TODO: create an immutable map using the suggestions
       Map variables = ImmutableMap.of("ways", ways);
-
-      //TODO: return a Json of the suggestions (HINT: use the GSON.Json())
-
       return GSON.toJson(variables);
     }
   }
@@ -386,7 +383,8 @@ public final class Main {
       NearestMapAction nearestMapAction = new NearestMapAction(db);
       List<KDNode<MapNode>> nearest = db.getTree()
           .nearest(1, nodeLat, nodeLong);
-      Double[] results = new Double[] {nearest.get(0).getValue().getCoords().get(0),nearest.get(0).getValue().getCoords().get(1)};
+      Double[] results = new Double[]{nearest.get(0).getValue().getCoords().get(0),
+          nearest.get(0).getValue().getCoords().get(1)};
       Map variables = ImmutableMap.of("coords", results, "id", nearest.get(0).getValue().getId());
       return GSON.toJson(variables);
     }
@@ -407,8 +405,8 @@ public final class Main {
 //                .parseAndReturnList(SQLQueries.streetIntersect(str11, str12)).get(0);
 
 
-      
-      List<List<String>> intersectionResults = new SQLParser(db.getFilename(),null).parseAndReturnList(SQLQueries.streetIntersect(street,cross));
+      List<List<String>> intersectionResults = new SQLParser(db.getFilename(), null)
+          .parseAndReturnList(SQLQueries.streetIntersect(street, cross));
       if (intersectionResults == null) {
         return null;
       }
@@ -435,11 +433,11 @@ public final class Main {
 
 
       MapNode node1 = db.getGraph().getNodeFromId(node1Id);
-         double lat1 = node1.getCoords().get(0);
-         double long1 = node1.getCoords().get(1);
+      double lat1 = node1.getCoords().get(0);
+      double long1 = node1.getCoords().get(1);
 
-         Double[] results = new Double[] {lat1 , long1};
-         Map variables = ImmutableMap.of("coords", results, "id", node1Id);
+      Double[] results = new Double[]{lat1, long1};
+      Map variables = ImmutableMap.of("coords", results, "id", node1Id);
       return GSON.toJson(variables);
     }
   }
@@ -452,40 +450,53 @@ public final class Main {
 
 
     String circles = "";
-    for (int i = 0; i < 800; i++) {
-      circles = circles + "<circle fill=\"#FFFFFF\" cx=\"" + (int) (800 * Math.random() - 100) +
-          "\" cy=\"" + (int) (1000 * Math.random()) +
-          "\" r=\"0.398\" style = \"animation: stars-blink " + (0.5 + 4 * Math.random()) +
-          "s linear infinite; \"/>";
+    final int numStars = 800;
+    for (int i = 0; i < numStars; i++) {
+      final int onehundred = 100;
+      final int onethousand = 1000;
+      final double onehalf = 0.5;
+      circles = circles + "<circle fill=\"#FFFFFF\" cx=\""
+          + (int) (numStars * Math.random() - onehundred)
+          + "\" cy=\"" + (int) (onethousand * Math.random())
+          + "\" r=\"0.398\" style = \"animation: stars-blink " + (onehalf + 4 * Math.random())
+          + "s linear infinite; \"/>";
     }
-    return "<div class = \"stars\">\n" +
-        "     <div class=\"starWrap starProject\">\n" +
-        "       <svg focusable=\"false\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" x=\"0px\" y=\"0px\" viewBox=\"0 0 599.456 593.71\" enable-background=\"new 0 0 599.456 593.71\" xml:space=\"preserve\" id=\"stars\">\n" +
-        "           " + circles + "" +
-        "       </svg>" +
-        "     </div>" +
-        "   </div>";
+    return "<div class = \"stars\">\n"
+        + "     <div class=\"starWrap starProject\">\n"
+        + "       <svg focusable=\"false\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\""
+        + " x=\"0px\" y=\"0px\" viewBox=\"0 0 599.456 593.71\" enable-background="
+        + "\"new 0 0 599.456 593.71\" xml:space=\"preserve\" id=\"stars\">\n"
+        + "           " + circles + ""
+        + "       </svg>"
+        + "     </div>"
+        + "   </div>";
   }
 
   private String generateCell(String starId, String starName, double x, double y, double z) {
-    return "<li>\n" +
-        "          <div class = \"list-item\">\n" +
-        "            <div class = \"list-item-content\">\n" +
-        "              <i class=\"fas fa-star\" style=\"margin-right: 10px; color:hsl(" +
-        (int) (180 + 40 * Math.random()) + "," + (25 + 70 * Math.random()) + "%," +
-        (15 + 70 * Math.random()) + "%)\">  </i>\n" +
-        "                 " + starName + "\n" +
-        "              <div class = \"list-item-id\">\n" +
-        "                " + starId + "\n" +
-        "              </div>\n" +
-        "            </div>\n" +
-        "            <div style=\"flex: 1; margin: auto\">\n" +
-        "              <div class = \"list-item-coords\">\n" +
-        "                (" + x + ", " + y + ", " + z + ")\n" +
-        "              </div>\n" +
-        "            </div>\n" +
-        "          </div>\n" +
-        "        </li>";
+    final int oneEighty = 180;
+    final int forty = 40;
+    final int twentyFive = 25;
+    final int seventy = 70;
+    final int fifteen = 15;
+    return "<li>\n"
+        + "          <div class = \"list-item\">\n"
+        + "            <div class = \"list-item-content\">\n"
+        + "              <i class=\"fas fa-star\" style=\"margin-right: 10px; color:hsl("
+        + (int) (oneEighty + forty * Math.random()) + "," + (twentyFive + seventy * Math.random())
+        + "%,"
+        + (fifteen + seventy * Math.random()) + "%)\">  </i>\n"
+        + "                 " + starName + "\n"
+        + "              <div class = \"list-item-id\">\n"
+        + "                " + starId + "\n"
+        + "              </div>\n"
+        + "            </div>\n"
+        + "            <div style=\"flex: 1; margin: auto\">\n"
+        + "              <div class = \"list-item-coords\">\n"
+        + "                (" + x + ", " + y + ", " + z + ")\n"
+        + "              </div>\n"
+        + "            </div>\n"
+        + "          </div>\n"
+        + "        </li>";
   }
 
   /**
@@ -493,29 +504,29 @@ public final class Main {
    */
   private static class FrontHandler implements TemplateViewRoute {
 
-    String _fireflies;
+    private String fireflies;
 
-    FrontHandler(String fireflies) {
-      _fireflies = fireflies;
+    FrontHandler(String firefly) {
+      fireflies = firefly;
     }
 
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title",
           "Stars!", "message", "poop", "suggestions", "Load in some data!", "cells", "", "stars",
-          _fireflies);
+          fireflies);
       return new ModelAndView(variables, "query.ftl");
     }
   }
 
   private class DataHandler implements TemplateViewRoute {
 
-    StarList _stars;
-    String _fireflies;
+    private StarList stars;
+    private String fireflies;
 
-    DataHandler(StarList stars, String fireflies) {
-      _stars = stars;
-      _fireflies = fireflies;
+    DataHandler(StarList starList, String firefly) {
+      stars = starList;
+      fireflies = firefly;
     }
 
     @Override
@@ -526,8 +537,8 @@ public final class Main {
       String suggestionString = "";
 
       try {
-        _stars.clear();
-        new CSVParser("data/stars/" + filename, _stars);
+        stars.clear();
+        new CSVParser("data/stars/" + filename, stars);
         suggestionString = filename + " successfully loaded!";
       } catch (Exception e) {
         suggestionString = "ERROR: " + e.getMessage();
@@ -536,19 +547,19 @@ public final class Main {
 
       Map<String, String> variables = ImmutableMap
           .of("title", "Stars!", "message", "Type in a Word!", "suggestions", suggestionString,
-              "cells", "", "stars", _fireflies);
+              "cells", "", "stars", fireflies);
       return new ModelAndView(variables, "query.ftl");
     }
   }
 
   private class NeighborHandler implements TemplateViewRoute {
 
-    String _fireflies;
-    StarList _stars;
+    private String fireflies;
+    private StarList stars;
 
-    NeighborHandler(StarList stars, String fireflies) {
-      _stars = stars;
-      _fireflies = fireflies;
+    NeighborHandler(StarList starList, String firefly) {
+      stars = starList;
+      fireflies = firefly;
     }
 
     @Override
@@ -556,48 +567,48 @@ public final class Main {
       QueryParamsMap qm = request.queryMap();
       String textFromTextField = qm.value("text");
       String naive = qm.value("naive");
-      List<String> args = Arrays.asList(textFromTextField.split(" "));
+      List<String> arg = Arrays.asList(textFromTextField.split(" "));
 
       String suggestionString;
       String cells = "";
 
       try {
-        if (_stars.isEmpty()) {
+        if (stars.isEmpty()) {
           suggestionString =
               "No stars loaded. Please load stars through the Select Star Data button";
         } else {
-          if (args.size() == 4) {
+          if (arg.size() == 4) {
             List<Star> neighbors;
             if (naive == null) {
-              neighbors = _stars.neighborsSearchCoords(Integer.parseInt(args.get(0)),
-                  Double.parseDouble(args.get(1)), Double.parseDouble(args.get(2)),
-                  Double.parseDouble(args.get(3)));
+              neighbors = stars.neighborsSearchCoords(Integer.parseInt(arg.get(0)),
+                  Double.parseDouble(arg.get(1)), Double.parseDouble(arg.get(2)),
+                  Double.parseDouble(arg.get(3)));
             } else {
-              neighbors = _stars.naiveNeighborsSearchCoords(Integer.parseInt(args.get(0)),
-                  Double.parseDouble(args.get(1)), Double.parseDouble(args.get(2)),
-                  Double.parseDouble(args.get(3)));
+              neighbors = stars.naiveNeighborsSearchCoords(Integer.parseInt(arg.get(0)),
+                  Double.parseDouble(arg.get(1)), Double.parseDouble(arg.get(2)),
+                  Double.parseDouble(arg.get(3)));
             }
             for (Star star : neighbors) {
-              cells = cells +
-                  generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
+              cells = cells
+                  + generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
                       star.getZ());
             }
             suggestionString = neighbors.size() + " nearest neighbors found!";
-          } else if (args.size() == 2) {
+          } else if (arg.size() == 2) {
             List<Star> neighbors;
             if (naive == null) {
-              neighbors = _stars
-                  .neighborsSearchName(Integer.parseInt(args.get(0)),
-                      args.get(1).replaceAll("\"", ""));
+              neighbors = stars
+                  .neighborsSearchName(Integer.parseInt(arg.get(0)),
+                      arg.get(1).replaceAll("\"", ""));
             } else {
-              neighbors = _stars
-                  .naiveNeighborsName(Integer.parseInt(args.get(0)),
-                      args.get(1).replaceAll("\"", ""));
+              neighbors = stars
+                  .naiveNeighborsName(Integer.parseInt(arg.get(0)),
+                      arg.get(1).replaceAll("\"", ""));
             }
             for (Star star : neighbors) {
 
-              cells = cells +
-                  generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
+              cells = cells
+                  + generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
                       star.getZ());
             }
             suggestionString = neighbors.size() + " nearest neighbors found!";
@@ -612,7 +623,7 @@ public final class Main {
 
       Map<String, String> variables = ImmutableMap
           .of("title", "Stars!", "message", "Type in a Word!", "suggestions", suggestionString,
-              "cells", cells, "stars", _fireflies);
+              "cells", cells, "stars", fireflies);
 
       return new ModelAndView(variables, "query.ftl");
     }
@@ -620,12 +631,12 @@ public final class Main {
 
   private class RadiusHandler implements TemplateViewRoute {
 
-    StarList _stars;
-    String _fireflies;
+    private StarList stars;
+    private String fireflies;
 
-    RadiusHandler(StarList stars, String fireflies) {
-      _stars = stars;
-      _fireflies = fireflies;
+    RadiusHandler(StarList starList, String firefly) {
+      stars = starList;
+      fireflies = firefly;
     }
 
     @Override
@@ -633,47 +644,47 @@ public final class Main {
       QueryParamsMap qm = request.queryMap();
       String textFromTextField = qm.value("text");
       String naive = qm.value("naive");
-      List<String> args = Arrays.asList(textFromTextField.split(" "));
+      List<String> arg = Arrays.asList(textFromTextField.split(" "));
       String suggestionString = "";
       String cells = "";
 
       try {
-        if (_stars.isEmpty()) {
+        if (stars.isEmpty()) {
           throw new Exception("no stars loaded");
         } else {
-          if (args.size() == 4) {
+          if (arg.size() == 4) {
             List<Star> neighbors;
             if (naive == null) {
-              neighbors = _stars
-                  .radiusCoords(Double.parseDouble(args.get(0)), Double.parseDouble(args.get(1)),
-                      Double.parseDouble(args.get(2)), Double.parseDouble(args.get(3)));
+              neighbors = stars
+                  .radiusCoords(Double.parseDouble(arg.get(0)), Double.parseDouble(arg.get(1)),
+                      Double.parseDouble(arg.get(2)), Double.parseDouble(arg.get(3)));
             } else {
-              neighbors = _stars
-                  .naiveRadiusCoords(Double.parseDouble(args.get(0)),
-                      Double.parseDouble(args.get(1)),
-                      Double.parseDouble(args.get(2)), Double.parseDouble(args.get(3)));
+              neighbors = stars
+                  .naiveRadiusCoords(Double.parseDouble(arg.get(0)),
+                      Double.parseDouble(arg.get(1)),
+                      Double.parseDouble(arg.get(2)), Double.parseDouble(arg.get(3)));
             }
             for (Star star : neighbors) {
-              cells = cells +
-                  generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
+              cells = cells
+                  + generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
                       star.getZ());
             }
             suggestionString = neighbors.size() + " stars found!";
-          } else if (args.size() == 2) {
+          } else if (arg.size() == 2) {
             List<Star> neighbors;
             if (naive == null) {
               neighbors =
-                  _stars
-                      .radiusName(Double.parseDouble(args.get(0)),
-                          args.get(1).replaceAll("\"", ""));
+                  stars
+                      .radiusName(Double.parseDouble(arg.get(0)),
+                          arg.get(1).replaceAll("\"", ""));
             } else {
-              neighbors = _stars
-                  .naiveRadiusName(Double.parseDouble(args.get(0)),
-                      args.get(1).replaceAll("\"", ""));
+              neighbors = stars
+                  .naiveRadiusName(Double.parseDouble(arg.get(0)),
+                      arg.get(1).replaceAll("\"", ""));
             }
             for (Star star : neighbors) {
-              cells = cells +
-                  generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
+              cells = cells
+                  + generateCell(star.getStarId(), star.getProperName(), star.getX(), star.getY(),
                       star.getZ());
             }
             suggestionString = neighbors.size() + " stars found!";
@@ -687,7 +698,7 @@ public final class Main {
 
       Map<String, String> variables = ImmutableMap
           .of("title", "Stars!", "message", "Type in a Word!", "suggestions", suggestionString,
-              "cells", cells, "stars", _fireflies);
+              "cells", cells, "stars", fireflies);
 
       return new ModelAndView(variables, "query.ftl");
     }

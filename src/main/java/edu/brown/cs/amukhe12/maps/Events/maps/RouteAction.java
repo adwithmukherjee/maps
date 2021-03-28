@@ -10,38 +10,44 @@ import edu.brown.cs.amukhe12.maps.sqlparser.SQLParser;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * RouteAction.
+ */
 public class RouteAction implements IEvent {
 
-  private String _id;
-  private DBReference _db;
+  private String id;
+  private DBReference db;
 
-  public RouteAction(DBReference db) {
-    _id = "route";
-    _db = db;
+  /**
+   * Constructor.
+   * @param database db
+   */
+  public RouteAction(DBReference database) {
+    id = "route";
+    db = database;
   }
 
   @Override
   public void execute(List<String> args) throws Exception {
-    if (!_db.isInitialized()) {
+    if (!db.isInitialized()) {
       throw new Exception("ERROR: no map db loaded");
     }
     if (args.size() == 4) {
 
       List<String> command = new ArrayList<>();
       command.add("route");
-      for(String arg: args){
+      for (String arg : args) {
         command.add(arg);
       }
-      List<String> retrieved = _db.retrieve(command);
-      if(retrieved != null){
-        for(String el: retrieved){
+      List<String> retrieved = db.retrieve(command);
+      if (retrieved != null) {
+        for (String el : retrieved) {
           System.out.println(el);
         }
       } else {
-        MapGraph _map = _db.getGraph();
+        MapGraph map = db.getGraph();
         try {
 
           double lat1 = Double.parseDouble(args.get(0));
@@ -54,12 +60,12 @@ public class RouteAction implements IEvent {
           double minLat = Math.min(lat1, lat2);
           double maxLat = Math.max(lat1, lat2);
 
-          MapNode node1 = _db.getTree().nearest(1, lat1, long1).get(0).getValue();
-          MapNode node2 = _db.getTree().nearest(1, lat2, long2).get(0).getValue();
+          MapNode node1 = db.getTree().nearest(1, lat1, long1).get(0).getValue();
+          MapNode node2 = db.getTree().nearest(1, lat2, long2).get(0).getValue();
 
 
           List<Way> route =
-              _map.routeFromNodeIds(node1.getId(), node2.getId());
+              map.routeFromNodeIds(node1.getId(), node2.getId());
           List<String> results = new ArrayList<>();
 
           for (Way way : route) {
@@ -71,8 +77,8 @@ public class RouteAction implements IEvent {
           if (!node1.equals(node2) && route.isEmpty()) {
             System.out.println("" + node1.getId() + " -/- " + node2.getId());
           }
-          _map.clearEdges();
-          _db.cache(command, results);
+          map.clearEdges();
+          db.cache(command, results);
 
         } catch (Exception e) {
           try {
@@ -81,10 +87,10 @@ public class RouteAction implements IEvent {
             String str21 = args.get(2).replaceAll("\"", "");
             String str22 = args.get(3).replaceAll("\"", "");
 
-            List<String> node1Ids = new SQLParser(_db.getFilename(), null)
+            List<String> node1Ids = new SQLParser(db.getFilename(), null)
                 .parseAndReturnList(SQLQueries.streetIntersect(str11, str12)).get(0);
 
-            List<String> node2Ids = new SQLParser(_db.getFilename(), null)
+            List<String> node2Ids = new SQLParser(db.getFilename(), null)
                 .parseAndReturnList(SQLQueries.streetIntersect(str21, str22)).get(0);
 
             String node1Id = "";
@@ -104,8 +110,8 @@ public class RouteAction implements IEvent {
               throw new Exception("no intersection found");
             }
 
-            MapNode node1 = _map.getNodeFromId(node1Id);
-            MapNode node2 = _map.getNodeFromId(node2Id);
+            MapNode node1 = map.getNodeFromId(node1Id);
+            MapNode node2 = map.getNodeFromId(node2Id);
 
             double lat1 = node1.getCoords().get(0);
             double long1 = node1.getCoords().get(1);
@@ -119,17 +125,13 @@ public class RouteAction implements IEvent {
             double deltaLat = Math.abs(maxLat - minLat) / 2;
             double deltaLong = Math.abs(maxLong - minLong) / 2;
 
-//            new SQLParser(_db.getFilename(), _map)
-//                .parse(
-//                    SQLQueries.routeEdges(maxLat + deltaLat, minLong - deltaLong, minLat - deltaLat,
-//                        maxLong + deltaLong));
-
             List<Way> route =
-                _map.routeFromNodeIds(node1.getId(), node2.getId());
+                map.routeFromNodeIds(node1.getId(), node2.getId());
             List<String> results = new ArrayList<>();
 
             for (Way way : route) {
-              String val = "" + way.from().getId() + " -> " + way.to().getId() + " : " + way.getId();
+              String val = "" + way.from().getId() + " -> " + way.to().getId()
+                  + " : " + way.getId();
               System.out.println(val);
               results.add(val);
 
@@ -137,8 +139,8 @@ public class RouteAction implements IEvent {
             if (!node1.equals(node2) && route.isEmpty()) {
               System.out.println("" + node1.getId() + " -/- " + node2.getId());
             }
-            _map.clearEdges();
-            _db.cache(command, results);
+            map.clearEdges();
+            db.cache(command, results);
           } catch (Exception e2) {
             e2.printStackTrace();
             throw new Exception("incorrect arg format");
@@ -154,6 +156,6 @@ public class RouteAction implements IEvent {
 
   @Override
   public String id() {
-    return _id;
+    return id;
   }
 }

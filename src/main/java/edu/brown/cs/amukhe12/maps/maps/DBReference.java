@@ -10,18 +10,18 @@ import java.util.concurrent.ExecutionException;
 
 public class DBReference {
 
-  private String _filename;
-  private boolean _isInitialized;
-  private MapTree _tree;
-  private MapGraph _graph;
-  private LoadingCache<List<String>, List<String>> _queryCache;
+  private String filename;
+  private boolean isInitialized;
+  private MapTree tree;
+  private MapGraph graph;
+  private LoadingCache<List<String>, List<String>> queryCache;
 
 
   public DBReference() {
-    _filename = "";
-    _isInitialized = false;
+    filename = "";
+    isInitialized = false;
     String spec = "maximumSize=10000,expireAfterWrite=10m";
-    _queryCache = CacheBuilder.from(spec)
+    queryCache = CacheBuilder.from(spec)
         .build(
             new CacheLoader<List<String>, List<String>>() {
               @Override
@@ -31,41 +31,41 @@ public class DBReference {
             });
   }
 
-  public void setFilename(String filename) throws Exception {
-    _filename = filename;
-    _isInitialized = true;
+  public void setFilename(String fName) throws Exception {
+    filename = fName;
+    isInitialized = true;
 
 
   }
 
   public String getFilename() {
-    return _filename;
+    return filename;
   }
 
   public void initializeTreeAndGraph() {
-    _graph = new MapGraph(this);
-    _tree = new MapTree(_graph);
+    graph = new MapGraph(this);
+    tree = new MapTree(graph);
   }
 
   public MapTree getTree() {
-    return _tree;
+    return tree;
   }
 
   public MapGraph getGraph() {
-    return _graph;
+    return graph;
   }
 
   public boolean isInitialized() {
-    return _isInitialized;
+    return isInitialized;
   }
 
 
   public void cache(List<String> args, List<String> results) throws ExecutionException {
-    _queryCache.put(args, results);
+    queryCache.put(args, results);
   }
 
   public List<String> retrieve(List<String> k) {
-    return _queryCache.getIfPresent(k);
+    return queryCache.getIfPresent(k);
   }
 
 

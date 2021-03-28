@@ -21,13 +21,23 @@ public class UserCheckin {
     lon = longitude;
   }
 
-  public int getId() {return id;}
+  public int getId() {
+    return id;
+  }
 
-  public String getName() {return name;}
+  public String getName() {
+    return name;
+  }
 
-  public double getTimestamp() {return ts;}
+  public double getTimestamp() {
+    return ts;
+  }
 
-  public double getLat() {return lat;}
+  public double getLat() {
+    return lat;
+  }
 
-  public double getLon() {return lon;}
+  public double getLon() {
+    return lon;
+  }
 }

@@ -47,26 +47,29 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
         if (startSt && startCr) {
             const street1 = startSt.current.value
             const cross1 = startCr.current.value
+            if (street1 && cross1) {
+                const onPointOneIntEntered = (res) => {
+                    const {coords, id} = res.data
+                    setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id})
+                }
 
-            const onPointOneIntEntered = (res) => {
-                const { coords, id } = res.data
-                setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
+                intersection(street1, cross1, onPointOneIntEntered)
+                // ONLY Redraws route on the setting of point 2
             }
-
-            intersection(street1, cross1, onPointOneIntEntered)
-            // ONLY Redraws route on the setting of point 2
         }
 
         if (endSt && endCr) {
             const street2 = endSt.current.value
             const cross2 = endCr.current.value
 
-            const onPointTwoIntEntered = (res) => {
-                const { coords, id } = res.data
-                setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
-            }
+            if (street2 && cross2) {
+                const onPointTwoIntEntered = (res) => {
+                    const {coords, id} = res.data
+                    setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id})
+                }
 
-            intersection(street2, cross2, onPointTwoIntEntered)
+                intersection(street2, cross2, onPointTwoIntEntered)
+            }
         }
     }
 

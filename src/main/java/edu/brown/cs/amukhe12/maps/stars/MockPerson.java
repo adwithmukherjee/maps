@@ -7,11 +7,11 @@ import java.util.List;
 
 public class MockPerson implements CSVEntry {
 
-  private String _firstName;
-  private String _lastName;
-  private String _gender;
-  private String _email;
-  private String _streetAddress;
+  private String firstName;
+  private String lastName;
+  private String gender;
+  private String email;
+  private String streetAddress;
 
 
   public MockPerson() {
@@ -23,11 +23,11 @@ public class MockPerson implements CSVEntry {
     if (fields.size() != 5) {
       throw new Exception("incorrect number of fields in csv row");
     }
-    _firstName = fields.get(0);
-    _lastName = fields.get(1);
-    _gender = fields.get(2);
-    _email = fields.get(3);
-    _streetAddress = fields.get(4);
+    firstName = fields.get(0);
+    lastName = fields.get(1);
+    gender = fields.get(2);
+    email = fields.get(3);
+    streetAddress = fields.get(4);
 
   }
 
@@ -35,22 +35,22 @@ public class MockPerson implements CSVEntry {
   @Override
   public List getFields() {
     ArrayList fields = new ArrayList();
-    fields.add(_firstName);
-    fields.add(_lastName);
-    fields.add(_gender);
-    fields.add(_email);
-    fields.add(_streetAddress);
+    fields.add(firstName);
+    fields.add(lastName);
+    fields.add(gender);
+    fields.add(email);
+    fields.add(streetAddress);
     return fields;
   }
 
   @Override
   public String toString() {
     return "MockPerson{"
-        + " firstName='" + _firstName + '\''
-        + ", lastName='" + _lastName + '\''
-        + ", gender='" + _gender + '\''
-        + ", email='" + _email + '\''
-        + ", streetAddress='" + _streetAddress + '\''
+        + " firstName='" + firstName + '\''
+        + ", lastName='" + lastName + '\''
+        + ", gender='" + gender + '\''
+        + ", email='" + email + '\''
+        + ", streetAddress='" + streetAddress + '\''
         + '}';
   }
 }

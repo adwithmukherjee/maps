@@ -9,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +35,7 @@ public final class CheckinThread extends Thread {
    * runs the thread by querying the url for information on user checkins.
    */
   public synchronized void run() {
-    List<List<String>>updates = null;
+    List<List<String>> updates = null;
 
     long lastSec = 0;
 
@@ -62,15 +61,13 @@ public final class CheckinThread extends Thread {
             checkins.put(timestamp, uc);
 
             //System.out.println(id);
-
-            // TODO: write to database
             try {
               Class.forName("org.sqlite.JDBC");
               String urlToDB = "jdbc:sqlite:" + "data/maps/maps.sqlite3";
-              Connection conn= DriverManager.getConnection(urlToDB);
+              Connection conn = DriverManager.getConnection(urlToDB);
               SQLQueries.insertCheckin(conn, id, name, timestamp, lat, lon);
               conn.close();
-            } catch(Exception e) {
+            } catch (Exception e) {
 
             }
 
@@ -80,6 +77,7 @@ public final class CheckinThread extends Thread {
       }
     }
   }
+
   private synchronized List<List<String>> update() throws IOException {
     URL serverURL = new URL("http://localhost:8080?last=" + last);
     last = Instant.now().getEpochSecond();
@@ -116,6 +114,7 @@ public final class CheckinThread extends Thread {
   /**
    * gets the latest checkin updates. Refreshes hashmap so only new
    * checkin updates are returned next time.
+   *
    * @return map from a string to a double of timestamps to checkin objects
    */
   public Map<Double, UserCheckin> getLatestCheckins() {

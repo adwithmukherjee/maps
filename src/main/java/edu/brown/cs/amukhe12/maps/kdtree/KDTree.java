@@ -12,29 +12,29 @@ import java.util.Stack;
 
 public class KDTree<V> {
 
-  private List<KDNode<V>> _nodes;
-  private int _dimensions;
-  private KDNode<V> _root;
-  private int _size;
+  private List<KDNode<V>> nodes;
+  private int dimensions;
+  private KDNode<V> root;
+  private int size;
 
-  public KDTree(int dimensions) {
-    _dimensions = dimensions;
-    _nodes = new ArrayList<>();
-    _size = 0;
+  public KDTree(int dim) {
+    dimensions = dim;
+    nodes = new ArrayList<>();
+    size = 0;
   }
 
   public void clear() {
-    _nodes.clear();
-    _size = 0;
-    _root = null;
+    nodes.clear();
+    size = 0;
+    root = null;
   }
 
-  public void setRoot(KDNode<V> root) {
-    _root = root;
+  public void setRoot(KDNode<V> newRoot) {
+    root = newRoot;
   }
 
   public KDNode<V> getRoot() {
-    return _root;
+    return root;
   }
 
   /**
@@ -75,7 +75,7 @@ public class KDTree<V> {
     while (true) {
 
       int dimension = start.getDimension();
-      int nextDimension = (dimension) % _dimensions + 1;
+      int nextDimension = (dimension) % dimensions + 1;
 
       if (new NodeComparator<V>(dimension).compare(node, start) > 0) {
         if (start.hasLeft()) {
@@ -119,7 +119,7 @@ public class KDTree<V> {
     }
 
     Stack<KDNode<V>> stack = new Stack();
-    stack.push(_root);
+    stack.push(root);
 
     while (!stack.isEmpty()) {
 
@@ -204,7 +204,7 @@ public class KDTree<V> {
     List<KDNode<V>> neighbors = new ArrayList<>();
 
     Stack<KDNode<V>> stack = new Stack();
-    stack.push(_root);
+    stack.push(root);
 
     while (!stack.isEmpty()) {
 
@@ -251,20 +251,20 @@ public class KDTree<V> {
 
 
   public void addNode(KDNode<V> node) {
-    _nodes.add(node);
-    _size += 1;
+    nodes.add(node);
+    size += 1;
   }
 
   public boolean isEmpty() {
-    return _size == 0;
+    return size == 0;
   }
 
   public int size() {
-    return _size;
+    return size;
   }
 
   public List<KDNode<V>> getNodes() {
-    return _nodes;
+    return nodes;
   }
 
 

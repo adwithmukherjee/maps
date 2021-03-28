@@ -35,7 +35,7 @@ public class REPL {
           String[] lnSplit = ln.split(" (?=(([^'\"]*['\"]){2})*[^'\"]*$)");
           if (eventHashMap.containsKey(lnSplit[0])) {
             executeEvents.addEventArgs(eventHashMap.get(lnSplit[0]),
-              new ArrayList<>(Arrays.asList(lnSplit)));
+                new ArrayList<>(Arrays.asList(lnSplit)));
           } else {
             System.err.println("ERROR: not a registered event");
           }

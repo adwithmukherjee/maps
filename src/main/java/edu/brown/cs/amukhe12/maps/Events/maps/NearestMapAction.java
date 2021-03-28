@@ -8,25 +8,32 @@ import edu.brown.cs.amukhe12.maps.maps.MapNode;
 
 import java.util.List;
 
+/**
+ * NearestMapAction.
+ */
 public class NearestMapAction implements IEvent {
 
-  private DBReference _db;
-  private String _id;
+  private DBReference db;
+  private String id;
 
-  public NearestMapAction(DBReference db) {
-    _db = db;
-    _id = "nearest";
+  /**
+   * Constructor.
+   * @param database db
+   */
+  public NearestMapAction(DBReference database) {
+    db = database;
+    id = "nearest";
   }
 
   @Override
   public void execute(List<String> args) throws Exception {
 
-    if (!_db.isInitialized()) {
+    if (!db.isInitialized()) {
       throw new Exception("ERROR: no map db set");
     }
     if (args.size() == 2) {
 
-      List<KDNode<MapNode>> nearest = _db.getTree()
+      List<KDNode<MapNode>> nearest = db.getTree()
           .nearest(1, Double.parseDouble(args.get(0)), Double.parseDouble(args.get(1)));
       System.out.println(nearest.get(0).getValue().getId());
     } else {
@@ -36,6 +43,6 @@ public class NearestMapAction implements IEvent {
 
   @Override
   public String id() {
-    return _id;
+    return id;
   }
 }

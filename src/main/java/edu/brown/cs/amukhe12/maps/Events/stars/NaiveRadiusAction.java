@@ -7,33 +7,33 @@ import edu.brown.cs.amukhe12.maps.stars.StarList;
 import java.util.List;
 
 /**
- * REPLAction that implements naive  radius search methods on given StarList
+ * REPLAction that implements naive  radius search methods on given StarList.
  */
 public class NaiveRadiusAction implements IEvent {
 
-  private StarList _stars;
-  private String _id;
+  private StarList stars;
+  private String id;
 
-  public NaiveRadiusAction(StarList stars) {
-    _stars = stars;
-    _id = "naive_radius";
+  public NaiveRadiusAction(StarList starList) {
+    stars = starList;
+    id = "naive_radius";
   }
 
   @Override
   public void execute(List<String> args) throws Exception {
-    if (_stars.isEmpty()) {
+    if (stars.isEmpty()) {
       throw new Exception("ERROR: no stars loaded");
     }
     if (args.size() == 4) {
-      List<Star> neighbors = _stars
-        .naiveRadiusCoords(Double.parseDouble(args.get(0)), Double.parseDouble(args.get(1)),
-          Double.parseDouble(args.get(2)), Double.parseDouble(args.get(3)));
+      List<Star> neighbors = stars
+          .naiveRadiusCoords(Double.parseDouble(args.get(0)), Double.parseDouble(args.get(1)),
+              Double.parseDouble(args.get(2)), Double.parseDouble(args.get(3)));
       for (Star star : neighbors) {
         System.out.println(star.getFields().get(0));
       }
     } else if (args.size() == 2) {
       List<Star> neighbors =
-        _stars.naiveRadiusName(Double.parseDouble(args.get(0)), args.get(1).replaceAll("\"", ""));
+          stars.naiveRadiusName(Double.parseDouble(args.get(0)), args.get(1).replaceAll("\"", ""));
       for (Star star : neighbors) {
         System.out.println(star.getFields().get(0));
       }
@@ -45,6 +45,6 @@ public class NaiveRadiusAction implements IEvent {
 
   @Override
   public String id() {
-    return _id;
+    return id;
   }
 }

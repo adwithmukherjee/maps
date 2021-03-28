@@ -1,63 +1,62 @@
 package edu.brown.cs.amukhe12.maps.maps;
 
 import edu.brown.cs.amukhe12.maps.graph.Edge;
-import edu.brown.cs.amukhe12.maps.graph.Node;
 
 public class Way implements Edge<MapNode, Way> {
 
-  String _type;
-  String _id;
-  String _name;
-  MapNode _from;
-  MapNode _to;
-  double _weight;
+  private String type;
+  private String id;
+  private String name;
+  private MapNode from;
+  private MapNode to;
+  private double weight;
 
-  public Way(String id, String name, String type) {
-    _from = null;
-    _to = null;
-    _id = id;
-    _type = type;
-    _weight = 0;
-    _name = name;
+  public Way(String wayId, String name, String wayType) {
+    from = null;
+    to = null;
+    id = wayId;
+    type = wayType;
+    weight = 0;
+    name = name;
   }
 
   @Override
   public MapNode from() {
-    return _from;
+    return from;
   }
 
   @Override
   public MapNode to() {
-    return _to;
+    return to;
   }
 
-  public String getName(){
-    return _name;
+  public String getName() {
+    return name;
   }
 
   @Override
   public void setFrom(MapNode u) {
-    _from = u;
+    from = u;
   }
 
   @Override
   public void setTo(MapNode v) {
-    _to = v;
+    to = v;
   }
 
   @Override
   public double weight() {
-    return _weight;
+    return weight;
   }
 
   @Override
   public void setWeight(double w) {
-    _weight = w;
+    weight = w;
   }
 
   @Override
   public String getId() {
-    return _id;
+    return id;
   }
 
   @Override

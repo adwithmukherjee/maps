@@ -4,20 +4,20 @@ import java.util.List;
 
 public class KDNode<V> {
 
-  private int _dimension;
-  private KDNode<V> _left;
-  private KDNode<V> _right;
-  private KDNode<V> _parent;
-  private boolean _isRoot;
-  private List<Double> _coords;
-  private V _value;
+  private int dimension;
+  private KDNode<V> left;
+  private KDNode<V> right;
+  private KDNode<V> parent;
+  private boolean isRoot;
+  private List<Double> coords;
+  private V value;
 
 
-  public KDNode(List<Double> coords, V value) {
-    _coords = coords;
-    _value = value;
-    _left = null;
-    _right = null;
+  public KDNode(List<Double> coordinates, V val) {
+    coords = coordinates;
+    value = val;
+    left = null;
+    right = null;
   }
 
   /**
@@ -26,57 +26,57 @@ public class KDNode<V> {
    * @param node
    */
   public void setLeft(KDNode<V> node) {
-    _left = node;
+    left = node;
   }
 
 
   public void setRight(KDNode<V> node) {
-    _right = node;
+    right = node;
   }
 
   public void setParent(KDNode<V> node) {
-    _parent = node;
+    parent = node;
   }
 
   public void setDimension(int dimension) {
-    this._dimension = dimension;
+    this.dimension = dimension;
   }
 
   public int getDimension() {
-    return _dimension;
+    return dimension;
   }
 
   public KDNode<V> getLeft() {
-    return _left;
+    return left;
   }
 
   public KDNode<V> getRight() {
-    return _right;
+    return right;
   }
 
   public KDNode<V> getParent() {
-    return _parent;
+    return parent;
   }
 
   public List<Double> getCoords() {
-    return _coords;
+    return coords;
   }
 
   public V getValue() {
-    return _value;
+    return value;
   }
 
   public boolean hasRight() {
-    return _right != null;
+    return right != null;
   }
 
   public boolean hasLeft() {
-    return _left != null;
+    return left != null;
   }
 
   public double distanceTo(KDNode<V> otherNode) {
     double sum = 0;
-    for (int i = 0; i < _coords.size(); i++) {
+    for (int i = 0; i < coords.size(); i++) {
       sum = sum + Math.pow(this.getCoords().get(i) - (double) otherNode.getCoords().get(i), 2);
     }
 

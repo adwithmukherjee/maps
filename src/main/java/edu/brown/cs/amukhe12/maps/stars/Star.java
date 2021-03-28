@@ -10,11 +10,11 @@ import java.util.List;
  */
 
 public class Star implements CSVEntry {
-  private String _starId;
-  private String _properName;
-  private double _x;
-  private double _y;
-  private double _z;
+  private String starId;
+  private String properName;
+  private double x;
+  private double y;
+  private double z;
 
   public Star() { }
 
@@ -23,53 +23,53 @@ public class Star implements CSVEntry {
     if (fields.size() != 5) {
       throw new Exception("incorrect number of fields in csv row");
     }
-    _starId = fields.get(0);
-    _properName = fields.get(1);
-    _x = Double.parseDouble(fields.get(2));
-    _y = Double.parseDouble(fields.get(3));
-    _z = Double.parseDouble(fields.get(4));
+    starId = fields.get(0);
+    properName = fields.get(1);
+    x = Double.parseDouble(fields.get(2));
+    y = Double.parseDouble(fields.get(3));
+    z = Double.parseDouble(fields.get(4));
   }
 
   @Override
   public List getFields() {
     ArrayList fields = new ArrayList();
-    fields.add(_starId);
-    fields.add(_properName);
-    fields.add(_x);
-    fields.add(_y);
-    fields.add(_z);
+    fields.add(starId);
+    fields.add(properName);
+    fields.add(x);
+    fields.add(y);
+    fields.add(z);
     return fields;
   }
 
   @Override
   public String toString() {
     return "Star{"
-        + "starId='" + _starId + '\''
-        + ", properName='" + _properName + '\''
-        + ", x=" + _x
-        + ", y=" + _y
-        + ", z=" + _z
+        + "starId='" + starId + '\''
+        + ", properName='" + properName + '\''
+        + ", x=" + x
+        + ", y=" + y
+        + ", z=" + z
         + '}';
   }
 
   public double getX() {
-    return _x;
+    return x;
   }
 
   public double getY() {
-    return _y;
+    return y;
   }
 
   public double getZ() {
-    return _z;
+    return z;
   }
 
   public String getProperName() {
-    return _properName;
+    return properName;
   }
 
   public String getStarId() {
-    return _starId;
+    return starId;
   }
 }
 

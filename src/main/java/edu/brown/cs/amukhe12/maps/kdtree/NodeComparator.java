@@ -1,6 +1,5 @@
 package edu.brown.cs.amukhe12.maps.kdtree;
 
-import edu.brown.cs.amukhe12.maps.kdtree.KDNode;
 
 import java.util.Comparator;
 

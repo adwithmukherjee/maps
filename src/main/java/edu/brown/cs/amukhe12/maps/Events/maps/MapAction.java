@@ -8,14 +8,21 @@ import edu.brown.cs.amukhe12.maps.sqlparser.SQLParser;
 
 import java.util.List;
 
+/**
+ * MapAction.
+ */
 public class MapAction implements IEvent {
 
-  private DBReference _db;
-  private String _id;
+  private DBReference db;
+  private String id;
 
-  public MapAction(DBReference db) {
-    _db = db;
-    _id = "map";
+  /**
+   * Constructor.
+   * @param database db
+   */
+  public MapAction(DBReference database) {
+    db = database;
+    id = "map";
   }
 
   @Override
@@ -25,9 +32,9 @@ public class MapAction implements IEvent {
     }
 
     try {
-      _db.setFilename(args.get(0));
-      _db.initializeTreeAndGraph();
-      new SQLParser(args.get(0), _db.getTree()).parse(SQLQueries.SELECT_ALL_TRAVERSABLE_NODES);
+      db.setFilename(args.get(0));
+      db.initializeTreeAndGraph();
+      new SQLParser(args.get(0), db.getTree()).parse(SQLQueries.SELECT_ALL_TRAVERSABLE_NODES);
     } catch (Exception e) {
       throw new Exception("invalid db path");
     }
@@ -37,6 +44,6 @@ public class MapAction implements IEvent {
 
   @Override
   public String id() {
-    return _id;
+    return id;
   }
 }

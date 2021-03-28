@@ -10,10 +10,10 @@ import java.util.Scanner;
 
 public class CSVParser {
 
-  private EntryList _list;
+  private EntryList eList;
 
   public CSVParser(String file, EntryList list) throws Exception {
-    _list = list;
+    eList = list;
     this.parseCSV(file);
   }
 
@@ -26,7 +26,7 @@ public class CSVParser {
     Scanner in = null;
     try {
       in = new Scanner(new File(file));
-      _list.clear();
+      eList.clear();
     } catch (FileNotFoundException e) {
       throw new Exception("ERROR: File does not exist.");
     }
@@ -67,7 +67,7 @@ public class CSVParser {
    * @throws Exception if there is a mismatch with the expected format of the input fields.
    */
   public void addEntry(List<String> fields) throws Exception {
-    _list.addEntry(fields);
+    eList.addEntry(fields);
   }
 
 }

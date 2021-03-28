@@ -11,21 +11,21 @@ import java.util.PriorityQueue;
 public class Graph<N extends Node, E extends Edge> {
 
 
-  private HashMap<String, N> _nodes;
-  private HashMap<String, E> _edges;
+  private HashMap<String, N> nodes;
+  private HashMap<String, E> edges;
 
 
   public Graph() {
-    _nodes = new HashMap<>();
-    _edges = new HashMap<>();
+    nodes = new HashMap<>();
+    edges = new HashMap<>();
   }
 
   /**
    * removes all of the edges from the Graph.
    */
   public void clearEdges() {
-    _edges = new HashMap<>();
-    for (N node : _nodes.values()) {
+    edges = new HashMap<>();
+    for (N node : nodes.values()) {
       node.clearEdges();
     }
   }
@@ -37,18 +37,18 @@ public class Graph<N extends Node, E extends Edge> {
    * @return - whether the Graph contains the Node
    */
   public boolean containsNodeWithId(String id) {
-    return _nodes.get(id) != null;
+    return nodes.get(id) != null;
   }
 
   public boolean containsEdgeWithId(String id) {
-    return _edges.get(id) != null;
+    return edges.get(id) != null;
   }
 
   public void insertNode(N u) throws Exception {
-    if (_nodes.get(u.getId()) != null) {
+    if (nodes.get(u.getId()) != null) {
       throw new Exception("Node already exists in Graph");
     }
-    _nodes.put(u.getId(), u);
+    nodes.put(u.getId(), u);
   }
 
   /**
@@ -65,7 +65,7 @@ public class Graph<N extends Node, E extends Edge> {
     if (!this.containsEdgeWithId(e.getId())) {
 
       //throw new Exception("Edge already exists in Graph");
-      _edges.put(e.getId(), e);
+      edges.put(e.getId(), e);
       e.setFrom(u);
       e.setTo(v);
       u.addOutEdge(e);
@@ -73,15 +73,13 @@ public class Graph<N extends Node, E extends Edge> {
     }
 
   }
-
   /**
    * gets a Node that has the given id.
-   *
-   * @param _id - the id of the Node to look for
+   * @param id - the id of the Node to look for
    * @return - the Node with the given id
    */
-  public N getNodeFromId(String _id) {
-    return _nodes.get(_id);
+  public N getNodeFromId(String id) {
+    return nodes.get(id);
   }
 
   /**
@@ -98,7 +96,7 @@ public class Graph<N extends Node, E extends Edge> {
     HashMap<DPQEntry<N>, DPQEntry<N>> prevPointer = new HashMap<>();
     HashMap<DPQEntry<N>, E> pointerEdges = new HashMap<>();
 
-    for (N node : _nodes.values()) {
+    for (N node : nodes.values()) {
       DPQEntry<N> entry;
 
       if (node == u) {
@@ -153,11 +151,11 @@ public class Graph<N extends Node, E extends Edge> {
   }
 
   public HashMap<String, E> getEdges() {
-    return _edges;
+    return edges;
   }
 
   public HashMap<String, N> getNodes() {
-    return _nodes;
+    return nodes;
   }
 
 
