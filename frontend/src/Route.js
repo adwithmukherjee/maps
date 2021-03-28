@@ -3,6 +3,8 @@ import TextBox from "./TextBox"
 import { AwesomeButton } from "react-awesome-button"
 import nearest from "./axios/nearest"
 import intersection from "./axios/intersection"
+import MapController from "./MapController"
+import Map from "./Map"
 
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss"
 
@@ -49,8 +51,8 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
             const cross1 = startCr.current.value
 
             const onPointOneIntEntered = (res) => {
-                const {coords, id} = res.data
-                setPointOne({coords: {latitude: coords[0], longitude: coords[1]}, id})
+                const { coords, id } = res.data
+                setPointOne({ coords: { latitude: coords[0], longitude: coords[1] }, id })
             }
 
             intersection(street1, cross1, onPointOneIntEntered)
@@ -62,8 +64,8 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
             const cross2 = endCr.current.value
 
             const onPointTwoIntEntered = (res) => {
-                const {coords, id} = res.data
-                setPointTwo({coords: {latitude: coords[0], longitude: coords[1]}, id})
+                const { coords, id } = res.data
+                setPointTwo({ coords: { latitude: coords[0], longitude: coords[1] }, id })
             }
 
             intersection(street2, cross2, onPointTwoIntEntered)
@@ -79,6 +81,15 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
         endSt.current.value = ""
         endCr.current.value = ""
     }
+
+    const handleResetMap = () => {
+
+        localStorage.clear()
+        handleClearRoute()
+        //  setNW({ latitude: 41.82686216366997, longitude: -71.40645750837325 })
+        // setSE({ latitude: 41.82355259953458, longitude: -71.4000750453612 })
+    }
+
 
     useEffect(() => {
         if (startLat.current && startLong.current && pointOne) {
@@ -134,6 +145,15 @@ const Route = ({ title, pointOne, pointTwo, setPointOne, setPointTwo, setActiveR
                 </AwesomeButton>
             </div>
 
+            <div>
+                <AwesomeButton
+                    //cssModule={AwesomeButtonStyles}
+                    type="primary"
+                    onPress={handleResetMap}
+                >
+                    Reset Map
+                </AwesomeButton>
+            </div>
 
         </div>
     )
