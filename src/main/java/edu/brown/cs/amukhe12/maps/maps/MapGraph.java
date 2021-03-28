@@ -13,21 +13,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
+/**
+ * MapGraph.
+ */
 public class MapGraph implements EntryList {
 
   private Graph<MapNode, Way> graph;
   private DBReference db;
 
+  /**
+   * Constructor.
+   * @param database db
+   */
   public MapGraph(DBReference database) {
     db = database;
     graph = new Graph<>();
   }
 
 
+  /**
+   * clearEdges.
+   */
   public void clearEdges() {
     graph.clearEdges();
   }
 
+  /**
+   * insertNode.
+   * @param u node
+   * @throws Exception throws exception.
+   */
   public void insertNode(MapNode u) throws Exception {
     graph.insertNode(u);
   }
@@ -111,6 +126,13 @@ public class MapGraph implements EntryList {
 //    return shortestPath;
 //  }
 
+  /**
+   * aStar.
+   * @param u start node
+   * @param v target node
+   * @return shortest path from u to v
+   * @throws Exception throws Exception
+   */
   public List<Way> aStar(MapNode u, MapNode v) throws Exception {
     PriorityQueue<APQEntry> pq = new PriorityQueue<>();
     HashMap<MapNode, APQEntry> nodeToEntries = new HashMap();
@@ -191,10 +213,21 @@ public class MapGraph implements EntryList {
   }
 
 
+  /**
+   * getNodeFromId.
+   * @param id  id
+   * @return node from id.
+   */
   public MapNode getNodeFromId(String id) {
     return graph.getNodeFromId(id);
   }
 
+  /**
+   * @param id1 node1 id
+   * @param id2 node2 id
+   * @return route from node1 to node2
+   * @throws Exception throws exception
+   */
   public List<Way> routeFromNodeIds(String id1, String id2) throws Exception {
 
     MapNode u = graph.getNodeFromId(id1);
@@ -205,10 +238,17 @@ public class MapGraph implements EntryList {
     return route;
   }
 
+  /**
+   * @return graph
+   */
   public Graph<MapNode, Way> getGraph() {
     return graph;
   }
 
+  /**
+   * @param u node to add edges from
+   * @throws Exception throws exception
+   */
   public void addOutEdges(MapNode u) throws Exception {
 
     List<List<String>> fields = new SQLParser(db.getFilename(), null)

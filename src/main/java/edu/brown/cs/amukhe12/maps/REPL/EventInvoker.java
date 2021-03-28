@@ -29,6 +29,7 @@ public class EventInvoker {
   /**
    * triggers every event that the user has inputted by calling their execute methods, then
    * clears the list of events.
+   * @throws Exception throws Exception
    */
   public void triggerEvents() throws Exception {
     for (EventArgTuple e : events) {

@@ -73,6 +73,8 @@ public final class Main {
    * The initial method called when execution begins.
    *
    * @param args An array of command line arguments
+   * @throws  SQLException throws SQLException
+   * @throws  ClassNotFoundException throws ClassNotFoundExecption
    */
   public static void main(String[] args) throws SQLException, ClassNotFoundException {
     new Main(args).run();
@@ -188,6 +190,9 @@ public final class Main {
 
   }
 
+  /**
+   * UserCheckinHandler.
+   */
   private class UserCheckinHandler implements Route {
 
     private Connection conn = null;
@@ -239,6 +244,10 @@ public final class Main {
 
   ///////CHECKIN SERVER/////
 
+
+  /**
+   * CheckinHandler.
+   */
   private class CheckinHandler implements Route {
 
     private Connection conn = null;
@@ -286,6 +295,10 @@ public final class Main {
   ///////////////////////////
   //////MAPS HANDLERS////////
   ///////////////////////////
+
+  /**
+   * NameAndCoordRouteHandler.
+   */
   private class NameAndCoordRouteHandler implements Route {
 
     @Override
@@ -325,6 +338,9 @@ public final class Main {
     }
   }
 
+  /**
+   * CoordsRouteHandler.
+   */
   private class CoordsRouteHandler implements Route {
 
     @Override
@@ -347,6 +363,9 @@ public final class Main {
     }
   }
 
+  /**
+   * WaysHandler.
+   */
   private class WaysHandler implements Route {
 
     @Override
@@ -372,6 +391,9 @@ public final class Main {
     }
   }
 
+  /**
+   * NearestHandler.
+   */
   private class NearestHandler implements Route {
 
     @Override
@@ -390,6 +412,9 @@ public final class Main {
     }
   }
 
+  /**
+   * IntersectionHandler.
+   */
   private class IntersectionHandler implements Route {
 
     @Override
@@ -519,6 +544,9 @@ public final class Main {
     }
   }
 
+  /**
+   * DataHandler.
+   */
   private class DataHandler implements TemplateViewRoute {
 
     private StarList stars;
@@ -552,6 +580,9 @@ public final class Main {
     }
   }
 
+  /**
+   * NeighborHandler.
+   */
   private class NeighborHandler implements TemplateViewRoute {
 
     private String fireflies;
@@ -629,6 +660,9 @@ public final class Main {
     }
   }
 
+  /**
+   * RadiusHandler.
+   */
   private class RadiusHandler implements TemplateViewRoute {
 
     private StarList stars;

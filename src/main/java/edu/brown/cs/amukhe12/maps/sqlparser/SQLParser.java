@@ -10,11 +10,20 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SQLParser.
+ */
 public class SQLParser {
 
   private static Connection conn = null;
   private EntryList list;
 
+  /**
+   * Constructor.
+   * @param filename filename.
+   * @param eList elist
+   * @throws Exception throws exception
+   */
   public SQLParser(String filename, EntryList eList) throws Exception {
     list = eList;
     Class.forName("org.sqlite.JDBC");
@@ -22,6 +31,11 @@ public class SQLParser {
     conn = DriverManager.getConnection(urlToDB);
   }
 
+  /**
+   * parse.
+   * @param statement statement to parse
+   * @throws Exception throws exception
+   */
   public void parse(String statement) throws Exception {
     PreparedStatement prep = conn.prepareStatement(statement);
     ResultSet rs = prep.executeQuery();
@@ -39,6 +53,11 @@ public class SQLParser {
     prep.close();
   }
 
+  /**
+   * @param statement statement to parse
+   * @return list
+   * @throws Exception throws exception
+   */
   public List<List<String>> parseAndReturnList(String statement) throws Exception {
     PreparedStatement prep = conn.prepareStatement(statement);
     ResultSet rs = prep.executeQuery();

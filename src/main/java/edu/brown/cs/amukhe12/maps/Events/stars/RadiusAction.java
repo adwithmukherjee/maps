@@ -14,6 +14,10 @@ public class RadiusAction implements IEvent {
   private StarList stars;
   private String id;
 
+  /**
+   * Constructor.
+   * @param starList starsList
+   */
   public RadiusAction(StarList starList) {
     stars = starList;
     id = "radius";

@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
+/**
+ * Graph.
+ * @param <N> Node Type.
+ * @param <E> Edge Type.
+ */
 public class Graph<N extends Node, E extends Edge> {
 
 
@@ -15,6 +20,9 @@ public class Graph<N extends Node, E extends Edge> {
   private HashMap<String, E> edges;
 
 
+  /**
+   * Constructor.
+   */
   public Graph() {
     nodes = new HashMap<>();
     edges = new HashMap<>();
@@ -40,10 +48,21 @@ public class Graph<N extends Node, E extends Edge> {
     return nodes.get(id) != null;
   }
 
+  /**
+   * returns whether or not the Graph contains a Edge of the given id.
+   *
+   * @param id - the id of the Edge to look for
+   * @return - whether the Graph contains the Edge
+   */
   public boolean containsEdgeWithId(String id) {
     return edges.get(id) != null;
   }
 
+  /**
+   * insertNode.
+   * @param u node to insert.
+   * @throws Exception throws exception.
+   */
   public void insertNode(N u) throws Exception {
     if (nodes.get(u.getId()) != null) {
       throw new Exception("Node already exists in Graph");
@@ -57,6 +76,7 @@ public class Graph<N extends Node, E extends Edge> {
    * @param u - the "from" Node
    * @param v - the "to" Node
    * @param e - the edge
+   * @throws Exception throws Exception
    */
   public void insertEdge(N u, N v, E e) throws Exception {
     if (!this.containsNodeWithId(u.getId()) || !this.containsNodeWithId(v.getId())) {
@@ -150,10 +170,16 @@ public class Graph<N extends Node, E extends Edge> {
     return shortestPath;
   }
 
+  /**
+   * @return edges
+   */
   public HashMap<String, E> getEdges() {
     return edges;
   }
 
+  /**
+   * @return nodes
+   */
   public HashMap<String, N> getNodes() {
     return nodes;
   }

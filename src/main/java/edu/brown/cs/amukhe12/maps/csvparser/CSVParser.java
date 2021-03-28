@@ -8,10 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * CSVParser.
+ */
 public class CSVParser {
 
   private EntryList eList;
 
+  /**
+   * Constructor.
+   * @param file filename
+   * @param list entryList
+   * @throws Exception throws Exception
+   */
   public CSVParser(String file, EntryList list) throws Exception {
     eList = list;
     this.parseCSV(file);
@@ -20,7 +29,7 @@ public class CSVParser {
   /**
    * @param file path to csv to be parsed. parseCSV then adds as many entries
    *             to the associated EntryList as rows in the CSV
-   * @throws Exception
+   * @throws Exception throws Exception
    */
   public void parseCSV(String file) throws Exception {
     Scanner in = null;

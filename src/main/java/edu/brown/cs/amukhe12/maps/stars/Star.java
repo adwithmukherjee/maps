@@ -16,6 +16,9 @@ public class Star implements CSVEntry {
   private double y;
   private double z;
 
+  /**
+   * constructor.
+   */
   public Star() { }
 
   @Override
@@ -52,22 +55,37 @@ public class Star implements CSVEntry {
         + '}';
   }
 
+  /**
+   * @return x
+   */
   public double getX() {
     return x;
   }
 
+  /**
+   * @return y
+   */
   public double getY() {
     return y;
   }
 
+  /**
+   * @return z
+   */
   public double getZ() {
     return z;
   }
 
+  /**
+   * @return name
+   */
   public String getProperName() {
     return properName;
   }
 
+  /**
+   * @return id
+   */
   public String getStarId() {
     return starId;
   }

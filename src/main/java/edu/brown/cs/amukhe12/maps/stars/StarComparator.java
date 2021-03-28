@@ -12,6 +12,12 @@ public class StarComparator implements Comparator<Star> {
   private double y1;
   private double z1;
 
+  /**
+   * constructor.
+   * @param xOrigin x
+   * @param yOrigin y
+   * @param zOrigin z
+   */
   public StarComparator(double xOrigin, double yOrigin, double zOrigin) {
     x1 = xOrigin;
     y1 = yOrigin;

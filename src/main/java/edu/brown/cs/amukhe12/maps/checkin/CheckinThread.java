@@ -27,6 +27,9 @@ public final class CheckinThread extends Thread {
   private boolean pause = false;
   static final long MSCONVERSION = 1000;
 
+  /**
+   * Constructor.
+   */
   public CheckinThread() {
     checkins = Collections.synchronizedMap(new HashMap<>());
   }

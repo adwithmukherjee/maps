@@ -2,6 +2,9 @@ package edu.brown.cs.amukhe12.maps.graph;
 
 import edu.brown.cs.amukhe12.maps.maps.MapNode;
 
+/**
+ * APQEntry.
+ */
 public class APQEntry implements Comparable<APQEntry> {
 
   private Double key;
@@ -9,6 +12,12 @@ public class APQEntry implements Comparable<APQEntry> {
   private MapNode target;
   private boolean visited;
 
+  /**
+   * Constructor.
+   * @param entryKey eKey
+   * @param mapNode node
+   * @param targetNode target
+   */
   public APQEntry(double entryKey, MapNode mapNode, MapNode targetNode) {
     key = entryKey;
     node = mapNode;
@@ -23,22 +32,37 @@ public class APQEntry implements Comparable<APQEntry> {
     return cost1.compareTo(cost2);
   }
 
-  public void setKey(double key) {
-    key = key;
+  /**
+   * @param newKey key
+   */
+  public void setKey(double newKey) {
+    key = newKey;
   }
 
+  /**
+   * @return key
+   */
   public Double getKey() {
     return key;
   }
 
+  /**
+   * @return node
+   */
   public MapNode getValue() {
     return node;
   }
 
+  /**
+   * @return visited
+   */
   public boolean visited() {
     return visited;
   }
 
+  /**
+   * set visited to true.
+   */
   public void visit() {
     visited = true;
   }

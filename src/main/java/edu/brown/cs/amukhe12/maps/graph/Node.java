@@ -2,6 +2,11 @@ package edu.brown.cs.amukhe12.maps.graph;
 
 import java.util.Collection;
 
+/**
+ * Node.
+ * @param <N> Node Type.
+ * @param <E> Edge Type.
+ */
 public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
   /**
    * getOutEdges.

@@ -14,6 +14,10 @@ public class NeighborsAction implements IEvent {
   private StarList stars;
   private String id;
 
+  /**
+   * Constructor.
+   * @param starList starsList
+   */
   public NeighborsAction(StarList starList) {
     stars = starList;
     id = "neighbors";

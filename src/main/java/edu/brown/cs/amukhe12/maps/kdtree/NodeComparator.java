@@ -4,14 +4,25 @@ package edu.brown.cs.amukhe12.maps.kdtree;
 import java.util.Comparator;
 
 
+/**
+ * NodeComparator.
+ * @param <V> Type.
+ */
 public class NodeComparator<V> implements Comparator<KDNode<V>> {
 
   private int dimToCompare;
 
+  /**
+   * Constructor.
+   * @param dimension dim
+   */
   public NodeComparator(int dimension) {
     dimToCompare = dimension;
   }
 
+  /**
+   * @param dimension dim
+   */
   public void setDimensionToCompare(int dimension) {
     dimToCompare = dimension;
   }

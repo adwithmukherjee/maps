@@ -5,6 +5,9 @@ import edu.brown.cs.amukhe12.maps.csvparser.CSVEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Mock.
+ */
 public class MockPerson implements CSVEntry {
 
   private String firstName;
@@ -14,6 +17,9 @@ public class MockPerson implements CSVEntry {
   private String streetAddress;
 
 
+  /**
+   * mock constructor.
+   */
   public MockPerson() {
 
   }

@@ -17,22 +17,36 @@ public class KDTree<V> {
   private KDNode<V> root;
   private int size;
 
+  /**
+   * Constructor.
+   * @param dim num of dim.
+   */
   public KDTree(int dim) {
     dimensions = dim;
     nodes = new ArrayList<>();
     size = 0;
   }
 
+  /**
+   * clear.
+   */
   public void clear() {
     nodes.clear();
     size = 0;
     root = null;
   }
 
+  /**
+   * setRoot.
+   * @param newRoot new root
+   */
   public void setRoot(KDNode<V> newRoot) {
     root = newRoot;
   }
 
+  /**
+   * @return root
+   */
   public KDNode<V> getRoot() {
     return root;
   }
@@ -59,7 +73,7 @@ public class KDTree<V> {
   /**
    * Inserts given KDNode in KDTree as per tree properties.
    *
-   * @param node
+   * @param node node
    */
   public void insert(KDNode<V> node) {
 
@@ -104,8 +118,8 @@ public class KDTree<V> {
   /**
    * Executes a search on the KDTree and returns a list of closest KDNodes to given coords.
    *
-   * @param capacity
-   * @param coords
+   * @param capacity capacity
+   * @param coords coords
    * @return List of nearest KDNodes.
    */
 
@@ -194,8 +208,8 @@ public class KDTree<V> {
   /**
    * Executes search on KDTree and returns List of KDNodes less than radius away from given coords.
    *
-   * @param radius
-   * @param coords
+   * @param radius r
+   * @param coords coords
    * @return List of KDNodes in given radius.
    */
   public List<KDNode<V>> radius(double radius, List<Double> coords) {
@@ -250,19 +264,31 @@ public class KDTree<V> {
   }
 
 
+  /**
+   * @param node new Node to add
+   */
   public void addNode(KDNode<V> node) {
     nodes.add(node);
     size += 1;
   }
 
+  /**
+   * @return true if empty false otherwise
+   */
   public boolean isEmpty() {
     return size == 0;
   }
 
+  /**
+   * @return size of tree
+   */
   public int size() {
     return size;
   }
 
+  /**
+   * @return node in tree
+   */
   public List<KDNode<V>> getNodes() {
     return nodes;
   }

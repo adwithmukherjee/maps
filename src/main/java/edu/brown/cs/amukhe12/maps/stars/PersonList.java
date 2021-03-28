@@ -6,10 +6,16 @@ import edu.brown.cs.amukhe12.maps.EntryList;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * personlist.
+ */
 public class PersonList implements EntryList {
 
   private List<MockPerson> people;
 
+  /**
+   * constructor.
+   */
   public PersonList() {
     people = new ArrayList<>();
   }
@@ -38,6 +44,9 @@ public class PersonList implements EntryList {
   }
 
 
+  /**
+   * @return people
+   */
   public List<MockPerson> getPeople() {
     return people;
   }

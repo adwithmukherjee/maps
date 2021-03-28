@@ -14,6 +14,10 @@ public class NaiveRadiusAction implements IEvent {
   private StarList stars;
   private String id;
 
+  /**
+   * Constructor.
+   * @param starList starsList
+   */
   public NaiveRadiusAction(StarList starList) {
     stars = starList;
     id = "naive_radius";

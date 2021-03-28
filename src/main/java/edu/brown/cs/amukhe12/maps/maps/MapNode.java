@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * MapNode.
+ */
 public class MapNode implements Node<MapNode, Way> {
 
   private Collection<Way> outEdges;
@@ -15,6 +18,12 @@ public class MapNode implements Node<MapNode, Way> {
   private double latitude;
   private double longitude;
 
+  /**
+   * Constructor.
+   * @param nodeId id
+   * @param lat lat
+   * @param lon lon
+   */
   public MapNode(String nodeId, Double lat, Double lon) {
     outEdges = new HashSet<>();
     inEdges = new HashSet<>();
@@ -27,7 +36,7 @@ public class MapNode implements Node<MapNode, Way> {
   /**
    * Haverstein distance to given MapNode.
    *
-   * @param v
+   * @param v node
    * @return haverstein distance
    */
   public double distanceTo(MapNode v) {
@@ -49,6 +58,9 @@ public class MapNode implements Node<MapNode, Way> {
     //return euclidean;
   }
 
+  /**
+   * @return coords
+   */
   public List<Double> getCoords() {
     return Arrays.asList(latitude, longitude);
   }

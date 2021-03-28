@@ -13,6 +13,10 @@ public class StarsAction implements IEvent {
   private StarList stars;
   private String id;
 
+  /**
+   * Constructor.
+   * @param starList starsList
+   */
   public StarsAction(StarList starList) {
     stars = starList;
     id = "ERROR: stars";

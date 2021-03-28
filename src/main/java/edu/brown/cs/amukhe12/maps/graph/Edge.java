@@ -1,5 +1,9 @@
 package edu.brown.cs.amukhe12.maps.graph;
 
+/**Edge.
+ * @param <N> Node type.
+ * @param <E> Edge Type.
+ */
 public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> extends Comparable<Edge> {
   /**
    * gets the Node that this edge comes from.
@@ -37,5 +41,9 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> extends Compar
    */
   void setWeight(double w);
 
+  /**
+   * gets the id of this edge.
+   * @return id
+   */
   String getId();
 }

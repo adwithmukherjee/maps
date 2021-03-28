@@ -2,6 +2,9 @@ package edu.brown.cs.amukhe12.maps.maps;
 
 import edu.brown.cs.amukhe12.maps.graph.Edge;
 
+/**
+ * Way.
+ */
 public class Way implements Edge<MapNode, Way> {
 
   private String type;
@@ -11,6 +14,12 @@ public class Way implements Edge<MapNode, Way> {
   private MapNode to;
   private double weight;
 
+  /**
+   * Constructor.
+   * @param wayId  id
+   * @param name name
+   * @param wayType type
+   */
   public Way(String wayId, String name, String wayType) {
     from = null;
     to = null;
@@ -30,6 +39,9 @@ public class Way implements Edge<MapNode, Way> {
     return to;
   }
 
+  /**
+   * @return name
+   */
   public String getName() {
     return name;
   }
