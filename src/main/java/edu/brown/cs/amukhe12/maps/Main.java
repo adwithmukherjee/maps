@@ -220,8 +220,6 @@ public final class Main {
       List<String[]> userInfoList = new ArrayList<>();
       while (rs.next()) {
         String[] fields = new String[5];
-        //= Arrays.asList(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),
-        // rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9));
         for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
           fields[i - 1] = (rs.getString(i));
         }
@@ -283,7 +281,6 @@ public final class Main {
         UserCheckin user = users.get(timestamp);
         userInfo[i] = new String[]{timestamp.toString(), "" + user.getId(),
             user.getName(), "" + user.getLat(), "" + user.getLon()};
-//        System.out.println(""+user.getId() + user.getName() + timestamp);
         i++;
       }
 
@@ -307,10 +304,8 @@ public final class Main {
       String street = body.getString("street");
       String cross = body.getString("cross");
       String node2Id = body.getString("node2Id");
-      // NOTE: need to catch if null
       List<String> intersection = new SQLParser(db.getFilename(), null)
           .parseAndReturnList(SQLQueries.streetIntersect(street, cross)).get(0);
-//     System.out.println(intersection);
       String node1Id = "";
       for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
@@ -320,9 +315,6 @@ public final class Main {
           }
         }
       }
-//      if (node1Id.equals("") ) {
-//        throw new Exception("no intersection found");
-//      }
       db.getGraph().clear();
       List<Way> route = db.getGraph().routeFromNodeIds(node1Id, node2Id);
       Double[][] results = new Double[route.size()][4];
@@ -426,9 +418,6 @@ public final class Main {
       String str11 = street.replaceAll("\"", "");
       String str12 = cross.replaceAll("\"", "");
 
-//      List<String> node1Ids = new SQLParser( db.getFilename(), null)
-//                .parseAndReturnList(SQLQueries.streetIntersect(str11, str12)).get(0);
-
 
       List<List<String>> intersectionResults = new SQLParser(db.getFilename(), null)
           .parseAndReturnList(SQLQueries.streetIntersect(street, cross));
@@ -446,16 +435,6 @@ public final class Main {
           }
         }
       }
-//      String node1Id = "";
-//      String node2Id = "";
-//       for (int i = 0; i < 2; i++) {
-//          for (int j = 0; j < 2; j++) {
-//              if (node1Ids.get(i).equals(node1Ids.get(2 + j))) {
-//                  node1Id = node1Ids.get(i);
-//                 }
-//            }
-//        }
-
 
       MapNode node1 = db.getGraph().getNodeFromId(node1Id);
       double lat1 = node1.getCoords().get(0);

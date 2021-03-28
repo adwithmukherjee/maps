@@ -7,7 +7,10 @@ import java.sql.SQLException;
 /**
  * SQLQueries.
  */
-public class SQLQueries {
+public final class SQLQueries {
+
+  private SQLQueries() {
+  }
   public static final String SELECT_ALL_EDGES = ""
       + "SELECT w.id, w.name, w.type, w.start, w.end\n"
       + "FROM way as w \n"
